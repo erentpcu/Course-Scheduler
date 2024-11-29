@@ -9,11 +9,11 @@ public class Lecture {
     private List<Student> enrolledStudents;
     private Classroom assignedClassroom;
 
-    public Lecture(int id, String name, TimeSlot timeSlot, int studentCount) {
+    public Lecture(int id, String name, int studentCount, TimeSlot timeSlot) {
         this.id = id;
         this.name = name;
-        this.timeSlot = timeSlot;
         this.studentCount = studentCount;
+        this.timeSlot = timeSlot;
         this.enrolledStudents = new ArrayList<>();
     }
 
