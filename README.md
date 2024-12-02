@@ -1,1 +1,1 @@
-# SE-302_Proje
+# Course Scheduler
