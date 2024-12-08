@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="StudentPopUpController">
+    <children>
+        <!-- Title -->
+        <Label text="Student Details" style="-fx-font-size: 20; -fx-font-weight: bold;" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="10" />
+
+        <!-- Student Name Label -->
+        <Label fx:id="studentNameLabel" text="Student: John Doe" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="50" />
+
+        <!-- Student ID Label -->
+        <Label fx:id="studentIdLabel" text="ID: 12345" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="80" />
+
+        <!-- Schedule Table -->
+        <TableView fx:id="scheduleTable" AnchorPane.leftAnchor="10" AnchorPane.topAnchor="120" AnchorPane.rightAnchor="10" AnchorPane.bottomAnchor="60">
+            <columns>
+                <TableColumn fx:id="dayColumn" text="Day" />
+                <TableColumn fx:id="timeColumn" text="Time" />
+            </columns>
+        </TableView>
+
+        <!-- Close Button -->
+        <Button text="Close" fx:id="closeButton" onAction="#closeWindow" AnchorPane.leftAnchor="10" AnchorPane.bottomAnchor="10" />
+    </children>
+</AnchorPane>

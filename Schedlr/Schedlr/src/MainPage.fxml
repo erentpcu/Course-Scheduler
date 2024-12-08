@@ -24,7 +24,7 @@
                         </tooltip>
                     </Button>
                 </HBox>
-                <TextArea fx:id="studentsTextArea" promptText="Student details..."/>
+                <ListView fx:id="studentsListView" />
             </VBox>
 
             <!-- Classrooms Section -->
@@ -38,7 +38,7 @@
                         </tooltip>
                     </Button>
                 </HBox>
-                <TextArea fx:id="classroomsTextArea" promptText="Classroom details..."/>
+                <ListView fx:id="classroomsListView"/>
             </VBox>
 
             <!-- Lectures Section -->
@@ -52,7 +52,7 @@
                         </tooltip>
                     </Button>
                 </HBox>
-                <TextArea fx:id="lecturesTextArea" promptText="Lecture details..."/>
+                <ListView fx:id="lecturesListView"/>
             </VBox>
         </HBox>
     </center>
