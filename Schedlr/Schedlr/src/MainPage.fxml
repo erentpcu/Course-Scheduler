@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+    <!-- Top Menu -->
+    <top>
+        <MenuBar>
+            <Menu text="Help">
+                <MenuItem text="About" onAction="#handleAbout"/>
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <HBox spacing="10" alignment="CENTER">
+            <!-- Students Section -->
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="STUDENTS"/>
+                <ListView fx:id="studentsListView" prefWidth="200" prefHeight="400"/>
+                <HBox spacing="5" alignment="CENTER">
+                    <Button text="Find" onAction="#handleFindStudent"/>
+                    <Button text="Add" onAction="#handleAddStudent"/>
+                </HBox>
+            </VBox>
+
+            <!-- Classrooms Section -->
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="CLASSROOMS"/>
+                <ListView fx:id="classroomsListView" prefWidth="200" prefHeight="400"/>
+                <HBox spacing="5" alignment="CENTER">
+                    <Button text="Find" onAction="#handleFindClassroom"/>
+                    <Button text="Add" onAction="#handleAddClassroom"/>
+                </HBox>
+            </VBox>
+
+            <!-- Lectures Section -->
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="LECTURES"/>
+                <ListView fx:id="lecturesListView" prefWidth="200" prefHeight="400"/>
+                <HBox spacing="5" alignment="CENTER">
+                    <Button text="Find" onAction="#handleFindLecture"/>
+                    <Button text="Add" onAction="#handleAddLecture"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>
