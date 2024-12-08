@@ -2,49 +2,57 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
-    <!-- Top Menu -->
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="Controller">
     <top>
         <MenuBar>
             <Menu text="Help">
-                <MenuItem text="About" onAction="#handleAbout"/>
+                <MenuItem text="About"/>
             </Menu>
         </MenuBar>
     </top>
-
-    <!-- Main Content -->
     <center>
-        <HBox spacing="10" alignment="CENTER">
+        <HBox spacing="10" style="-fx-padding: 10;">
             <!-- Students Section -->
-            <VBox spacing="5" alignment="CENTER">
-                <Label text="STUDENTS"/>
-                <ListView fx:id="studentsListView" prefWidth="200" prefHeight="400"/>
-                <HBox spacing="5" alignment="CENTER">
-                    <Button text="Find" onAction="#handleFindStudent"/>
-                    <Button text="Add" onAction="#handleAddStudent"/>
+            <VBox spacing="10" fx:id="studentsSection" prefWidth="250">
+                <Label text="Students"/>
+                <HBox spacing="5">
+                    <TextField fx:id="studentsSearchBar" promptText="Search students..." HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="studentsAddButton" text="+">
+                        <tooltip>
+                            <Tooltip text="Add Student"/>
+                        </tooltip>
+                    </Button>
                 </HBox>
+                <TextArea fx:id="studentsTextArea" promptText="Student details..."/>
             </VBox>
 
             <!-- Classrooms Section -->
-            <VBox spacing="5" alignment="CENTER">
-                <Label text="CLASSROOMS"/>
-                <ListView fx:id="classroomsListView" prefWidth="200" prefHeight="400"/>
-                <HBox spacing="5" alignment="CENTER">
-                    <Button text="Find" onAction="#handleFindClassroom"/>
-                    <Button text="Add" onAction="#handleAddClassroom"/>
+            <VBox spacing="10" fx:id="classroomsSection" prefWidth="250">
+                <Label text="Classrooms"/>
+                <HBox spacing="5">
+                    <TextField fx:id="classroomsSearchBar" promptText="Search classrooms..." HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="classroomsAddButton" text="+">
+                        <tooltip>
+                            <Tooltip text="Add Classroom"/>
+                        </tooltip>
+                    </Button>
                 </HBox>
+                <TextArea fx:id="classroomsTextArea" promptText="Classroom details..."/>
             </VBox>
 
             <!-- Lectures Section -->
-            <VBox spacing="5" alignment="CENTER">
-                <Label text="LECTURES"/>
-                <ListView fx:id="lecturesListView" prefWidth="200" prefHeight="400"/>
-                <HBox spacing="5" alignment="CENTER">
-                    <Button text="Find" onAction="#handleFindLecture"/>
-                    <Button text="Add" onAction="#handleAddLecture"/>
+            <VBox spacing="10" fx:id="lecturesSection" prefWidth="250">
+                <Label text="Lectures"/>
+                <HBox spacing="5">
+                    <TextField fx:id="lecturesSearchBar" promptText="Search lectures..." HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="lecturesAddButton" text="+">
+                        <tooltip>
+                            <Tooltip text="Add Lecture"/>
+                        </tooltip>
+                    </Button>
                 </HBox>
+                <TextArea fx:id="lecturesTextArea" promptText="Lecture details..."/>
             </VBox>
         </HBox>
     </center>

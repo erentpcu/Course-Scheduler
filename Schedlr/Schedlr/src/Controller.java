@@ -1,67 +1,70 @@
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 public class Controller {
 
+    // Students Section
     @FXML
-    private ListView<String> studentsListView;
+    private TextField studentsSearchBar;
+    @FXML
+    private TextArea studentsTextArea;
+    @FXML
+    private Button studentsAddButton;
+
+    // Classrooms Section
+    @FXML
+    private TextField classroomsSearchBar;
+    @FXML
+    private TextArea classroomsTextArea;
+    @FXML
+    private Button classroomsAddButton;
+
+    // Lectures Section
+    @FXML
+    private TextField lecturesSearchBar;
+    @FXML
+    private TextArea lecturesTextArea;
+    @FXML
+    private Button lecturesAddButton;
 
     @FXML
-    private ListView<String> classroomsListView;
+    public void initialize() {
+        // Search functionality for Students
+        studentsSearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("Searching students: " + newValue);
+            // Add student search logic here
+        });
 
-    @FXML
-    private ListView<String> lecturesListView;
+        // Search functionality for Classrooms
+        classroomsSearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("Searching classrooms: " + newValue);
+            // Add classroom search logic here
+        });
 
-    // Handle "Find" button in Students section
-    @FXML
-    private void handleFindStudent() {
-        showAlert("Find Student", "This feature is under construction.");
-    }
+        // Search functionality for Lectures
+        lecturesSearchBar.textProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("Searching lectures: " + newValue);
+            // Add lecture search logic here
+        });
 
-    // Handle "Add" button in Students section
-    @FXML
-    private void handleAddStudent() {
-        showAlert("Add Student", "This feature is under construction.");
-    }
+        // Add functionality for Students
+        studentsAddButton.setOnAction(event -> {
+            System.out.println("Add button clicked for Students");
+            // Implement the logic for adding a student here
+        });
 
-    // Handle "Find" button in Classrooms section
-    @FXML
-    private void handleFindClassroom() {
-        showAlert("Find Classroom", "This feature is under construction.");
-    }
+        // Add functionality for Classrooms
+        classroomsAddButton.setOnAction(event -> {
+            System.out.println("Add button clicked for Classrooms");
+            // Implement the logic for adding a classroom here
+        });
 
-    // Handle "Add" button in Classrooms section
-    @FXML
-    private void handleAddClassroom() {
-        showAlert("Add Classroom", "This feature is under construction.");
-    }
-
-    // Handle "Find" button in Lectures section
-    @FXML
-    private void handleFindLecture() {
-        showAlert("Find Lecture", "This feature is under construction.");
-    }
-
-    // Handle "Add" button in Lectures section
-    @FXML
-    private void handleAddLecture() {
-        showAlert("Add Lecture", "This feature is under construction.");
-    }
-
-    // Handle "About" menu item
-    @FXML
-    private void handleAbout() {
-        showAlert("About", "This is a simple scheduling application.");
-    }
-
-    // Utility method to show alerts
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        // Add functionality for Lectures
+        lecturesAddButton.setOnAction(event -> {
+            System.out.println("Add button clicked for Lectures");
+            // Implement the logic for adding a lecture here
+        });
     }
 }
