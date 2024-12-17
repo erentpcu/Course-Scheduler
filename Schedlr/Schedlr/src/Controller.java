@@ -3,7 +3,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class Controller {
     @FXML private ListView<String> studentsListView;
@@ -23,28 +24,69 @@ public class Controller {
         lecturesListView.getItems().addAll(lectures);
 
         // Add event listeners for ListView items
-        studentsListView.setOnMouseClicked(event -> openStudentDetailsWindow(studentsListView.getSelectionModel().getSelectedItem()));
-        classroomsListView.setOnMouseClicked(event -> openClassroomDetailsWindow(classroomsListView.getSelectionModel().getSelectedItem()));
-        lecturesListView.setOnMouseClicked(event -> openLectureDetailsWindow(lecturesListView.getSelectionModel().getSelectedItem()));
+        studentsListView.setCellFactory(param -> createListCell("Student"));
+        classroomsListView.setCellFactory(param -> createListCell("Classroom"));
+        lecturesListView.setCellFactory(param -> createListCell("Lecture"));
     }
+
+    // Factory method to create list cells with remove buttons
+    private ListCell<String> createListCell(String type) {
+        return new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    // Create the label for the item text (default styling)
+                    Label itemLabel = new Label(item);
+
+                    // Create a flexible spacer
+                    Region spacer = new Region();
+                    HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                    // Create the remove button
+                    Button removeButton = new Button("X");
+                    removeButton.setStyle("-fx-background-color: darkred; -fx-text-fill: white; -fx-font-weight: bold;");
+                    removeButton.setOnAction(event -> getListView().getItems().remove(item));
+
+                    // Layout: HBox with label, spacer, and button
+                    HBox hBox = new HBox(10, itemLabel, spacer, removeButton);
+                    hBox.setStyle("-fx-alignment: center-left; -fx-padding: 5;");
+
+                    setGraphic(hBox);
+
+                    // Double-click to open pop-up
+                    setOnMouseClicked(event -> {
+                        if (event.getClickCount() == 2) {
+                            if (type.equals("Student")) {
+                                openStudentDetailsWindow(item);
+                            } else if (type.equals("Classroom")) {
+                                openClassroomDetailsWindow(item);
+                            } else if (type.equals("Lecture")) {
+                                openLectureDetailsWindow(item);
+                            }
+                        }
+                    });
+                }
+            }
+        };
+    }
+
 
     // Method to handle opening student details in a pop-up window
     private void openStudentDetailsWindow(String student) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("studentPopUpPage.fxml"));
-            Stage studentDetailsStage = new Stage();
-
-            // Load the AnchorPane, not VBox
             AnchorPane layout = loader.load();
 
-            // Pass the student data to the controller
             StudentPopUpController controller = loader.getController();
-            controller.setStudentDetails(student, "12345");  // Example student ID
+            controller.setStudentDetails(student, "12345"); // Example student ID
 
-            Scene scene = new Scene(layout, 400, 400);
-            studentDetailsStage.setScene(scene);
-            studentDetailsStage.setTitle("Student Details");
-            studentDetailsStage.show();
+            Stage stage = createPopUpStage("Student Details", layout);
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,16 +96,13 @@ public class Controller {
     private void openClassroomDetailsWindow(String classroom) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("classroomPopUpPage.fxml"));
-            Stage classroomDetailsStage = new Stage();
-            AnchorPane layout = (AnchorPane) loader.load();
+            AnchorPane layout = loader.load();
 
             ClassroomPopUpController controller = loader.getController();
-            controller.initialize(classroom);  // Pass the selected classroom to the pop-up
+            controller.initialize(classroom); // Pass the selected classroom to the pop-up
 
-            Scene scene = new Scene(layout, 400, 400);
-            classroomDetailsStage.setScene(scene);
-            classroomDetailsStage.setTitle("Classroom Details");
-            classroomDetailsStage.show();
+            Stage stage = createPopUpStage("Classroom Details", layout);
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,18 +112,24 @@ public class Controller {
     private void openLectureDetailsWindow(String lecture) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("lecturePopUpPage.fxml"));
-            Stage lectureDetailsStage = new Stage();
-            AnchorPane layout = (AnchorPane) loader.load();
+            AnchorPane layout = loader.load();
 
             LecturePopUpController controller = loader.getController();
-            controller.initialize(lecture);  // Pass the selected lecture to the pop-up
+            controller.initialize(lecture); // Pass the selected lecture to the pop-up
 
-            Scene scene = new Scene(layout, 400, 400);
-            lectureDetailsStage.setScene(scene);
-            lectureDetailsStage.setTitle("Lecture Details");
-            lectureDetailsStage.show();
+            Stage stage = createPopUpStage("Lecture Details", layout);
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // Utility method to create and configure a new Stage for pop-ups
+    private Stage createPopUpStage(String title, AnchorPane layout) {
+        Stage stage = new Stage();
+        stage.setScene(new Scene(layout, 400, 400));
+        stage.setTitle(title);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        return stage;
     }
 }
