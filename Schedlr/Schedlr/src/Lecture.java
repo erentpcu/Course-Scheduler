@@ -33,7 +33,8 @@ public class Lecture {
     public String getName() {
         return name;
     }
-    public int getStudentCount(){
+
+    public int getStudentCount() {
         return studentCount;
     }
 
@@ -53,8 +54,11 @@ public class Lecture {
     public void assignClassroom(Classroom classroom) {
         this.assignedClassroom = classroom;
     }
-}
 
-//todo isCapacityExceed()
-//todo addLecture()
-//todo removeStudent()
+    // Method to remove a lecture from a list of lectures
+    public void removeLecture(List<Lecture> lectures) {
+        // Remove this lecture from the provided list
+        lectures.remove(this);
+    }
+
+}
