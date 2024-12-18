@@ -25,7 +25,7 @@ public class Main extends Application{
         // Create TimeSlots
         TimeSlot slot1 = new TimeSlot("Monday", "09:00", "10:00");
         TimeSlot slot2 = new TimeSlot("Monday", "10:00", "11:00");
-        TimeSlot slot3 = new TimeSlot("Monday", "11:00", "12:00");
+        TimeSlot slot3 = new TimeSlot("Monday", "11:00", "12:00");//Berke
 
         // Create Lectures
         lectures.add(new Lecture(1, "Math 101", slot1, 25));
