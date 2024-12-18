@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="AddLectureController" prefWidth="300" prefHeight="200">
+    <VBox spacing="10" alignment="CENTER" prefWidth="300" prefHeight="200">
+        <Label text="Add New Lecture" style="-fx-font-size: 16; -fx-font-weight: bold;" />
+        <TextField fx:id="lectureNameField" promptText="Lecture Name" />
+        <TextField fx:id="lectureIdField" promptText="Lecture ID" />
+        <TextField fx:id="timeSlotField" promptText="Time Slot (e.g., Monday,10 AM,12 PM)" />
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="addButton" text="Add" onAction="#handleAddButtonAction" />
+            <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancelButtonAction" />
+        </HBox>
+    </VBox>
+</AnchorPane>

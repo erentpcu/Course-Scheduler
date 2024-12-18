@@ -109,6 +109,39 @@ public class Controller {
         }
     }
 
+
+    @FXML
+    private TextField lectureSearchField; // Assuming you have a text field for searching lectures
+
+    @FXML
+    private void handleAddLectureButtonAction() {
+        try {
+            // Load the FXML for the addLecture pop-up
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("addLecturePopUpPage.fxml"));
+            AnchorPane layout = loader.load();
+
+            AddLectureController addLectureController = loader.getController();
+            addLectureController.setLectureList(lectureList); // Pass the lectureList to the controller
+
+            // Create and configure the pop-up stage
+            Stage stage = new Stage();
+            stage.setScene(new Scene(layout));
+            stage.setTitle("Add New Lecture");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            // Refresh the lectureListView after adding a lecture
+            lecturesListView.getItems().clear();
+            for (Lecture lecture : lectureList) {
+                lecturesListView.getItems().add(lecture.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
     // Method to handle opening student details in a pop-up window.
     private void openStudentDetailsWindow(String student) {
         try {

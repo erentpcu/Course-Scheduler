@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -55,7 +54,7 @@
                 <Label text="Lectures" />
                 <HBox spacing="5">
                     <TextField fx:id="lecturesSearchBar" promptText="Search lectures..." HBox.hgrow="ALWAYS" />
-                    <Button fx:id="lecturesAddButton" text="+">
+                    <Button fx:id="lecturesAddButton" text="+" onAction="#handleAddLectureButtonAction">
                         <tooltip>
                             <Tooltip text="Add Lecture" />
                         </tooltip>

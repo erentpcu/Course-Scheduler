@@ -61,4 +61,12 @@ public class Lecture {
         lectures.remove(this);
     }
 
+    // Static method to add a new lecture to the lecture list
+    public static void addLecture(List<Lecture> lectureList, String name, int id, TimeSlot timeSlot, int capacity) {
+        Lecture newLecture = new Lecture(id, name, timeSlot, capacity);
+        lectureList.add(newLecture);
+    }
+
+    //todo isCapacityExceed()
+
 }
