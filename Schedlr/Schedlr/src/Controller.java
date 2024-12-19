@@ -119,7 +119,7 @@ public class Controller {
     private void handleAddStudentButtonAction() {
         try {
             // Load the FXML for the addLecture pop-up
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddStudent.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/AddStudent.fxml"));
             AnchorPane layout = loader.load();
 
             AddStudentController addStudentController = loader.getController();
@@ -146,7 +146,7 @@ public class Controller {
     private void handleAddLectureButtonAction() {
         try {
             // Load the FXML for the addLecture pop-up
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("addLecturePopUpPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/addLecturePopUpPage.fxml"));
             AnchorPane layout = loader.load();
 
             AddLectureController addLectureController = loader.getController();
@@ -172,13 +172,13 @@ public class Controller {
     // Method to handle opening student details in a pop-up window.
     private void openStudentDetailsWindow(String student) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("studentPopUpPage.fxml"));
-            AnchorPane layout = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("studentPopUpPage.fxml")); // Dosya yolunu kontrol edin
+            GridPane layout = loader.load();
 
             StudentPopUpController controller = loader.getController();
-            controller.setStudentDetails(student, "12345"); // Example student ID.
+            controller.setStudentDetails(student); // Set the student name
 
-            Stage stage = createPopUpStage("Student Details", layout);
+            Stage stage = createPopUpStage(student + "in ders programı", layout);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,7 +188,7 @@ public class Controller {
     // Method to handle opening classroom details in a pop-up window.
     private void openClassroomDetailsWindow(String classroom) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("classroomPopUpPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/classroomPopUpPage.fxml"));
             AnchorPane layout = loader.load();
 
             ClassroomPopUpController controller = loader.getController();
@@ -204,7 +204,7 @@ public class Controller {
     // Method to handle opening lecture details in a pop-up window.
     private void openLectureDetailsWindow(String lecture) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("lecturePopUpPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/path/to/lecturePopUpPage.fxml"));
             AnchorPane layout = loader.load();
 
             LecturePopUpController controller = loader.getController();
@@ -218,9 +218,9 @@ public class Controller {
     }
 
     // Utility method to create and configure a new Stage for pop-ups.
-    private Stage createPopUpStage(String title, AnchorPane layout) {
+    private Stage createPopUpStage(String title, Pane layout) {
         Stage stage = new Stage();
-        stage.setScene(new Scene(layout, 400, 400));
+        stage.setScene(new Scene(layout, 600, 400)); // Adjust size as needed
         stage.setTitle(title);
         stage.initModality(Modality.APPLICATION_MODAL);
         return stage;
