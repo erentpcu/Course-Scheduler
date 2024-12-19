@@ -26,7 +26,7 @@
                 <Label text="Students" />
                 <HBox spacing="5">
                     <TextField fx:id="studentsSearchBar" promptText="Search students..." HBox.hgrow="ALWAYS" />
-                    <Button fx:id="studentsAddButton" text="+">
+                    <Button fx:id="studentsAddButton" text="+" onAction="#handleAddStudentButtonAction">
                         <tooltip>
                             <Tooltip text="Add Student" />
                         </tooltip>

@@ -14,7 +14,8 @@ public class Controller {
     @FXML private ListView<String> classroomsListView;
     @FXML private ListView<String> lecturesListView;
 
-    private List<Lecture> lectureList; // Added lectureList to store Lecture objects.
+    private List<Lecture> lectureList;
+    private List<Student> studentList; // Student list declaration
 
     // Sample data for students and classrooms
     private final String[] students = {"John Doe", "Jane Smith", "Alex Brown"};
@@ -22,6 +23,9 @@ public class Controller {
 
     @FXML
     public void initialize() {
+        // Initialize the studentList
+        studentList = new ArrayList<>(); // Initialize studentList
+
         // Initialize the lectureList with sample data.
         lectureList = new ArrayList<>();
         lectureList.add(new Lecture(1, "Math 101", new TimeSlot("Monday"," 10 AM", "12 PM"), 30));
@@ -109,9 +113,34 @@ public class Controller {
         }
     }
 
-
     @FXML
     private TextField lectureSearchField; // Assuming you have a text field for searching lectures
+    @FXML
+    private void handleAddStudentButtonAction() {
+        try {
+            // Load the FXML for the addLecture pop-up
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddStudent.fxml"));
+            AnchorPane layout = loader.load();
+
+            AddStudentController addStudentController = loader.getController();
+            addStudentController.setStudentList(studentList); // Pass the studentlist to the controller
+
+            // Create and configure the pop-up stage
+            Stage stage = new Stage();
+            stage.setScene(new Scene(layout));
+            stage.setTitle("Add New Student");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            // Refresh the studentsListView after adding a student
+            studentsListView.getItems().clear();
+            for (Student student : studentList) {
+                studentsListView.getItems().add(student.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void handleAddLectureButtonAction() {
@@ -139,8 +168,6 @@ public class Controller {
             e.printStackTrace();
         }
     }
-
-
 
     // Method to handle opening student details in a pop-up window.
     private void openStudentDetailsWindow(String student) {
