@@ -20,6 +20,7 @@ public class Lecture {
     public void enrollStudent(Student student) {
         enrolledStudents.add(student);
         student.addLecture(this);
+        studentCount++; // Increment student count when a student is enrolled
     }
 
     public List<Student> getEnrolledStudents() {
@@ -67,6 +68,12 @@ public class Lecture {
         lectureList.add(newLecture);
     }
 
-    //todo isCapacityExceed()
-
+    // Method to check if the student count exceeds the classroom's capacity
+    public boolean isCapacityExceed() {
+        if (assignedClassroom == null) {
+            System.out.println("No classroom assigned to lecture: " + name);
+            return false; // Assuming no capacity exceeded if no classroom assigned
+        }
+        return studentCount > assignedClassroom.getCapacity();
+    }
 }

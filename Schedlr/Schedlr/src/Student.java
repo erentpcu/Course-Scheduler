@@ -38,5 +38,5 @@ public class Student {
     }
 
 
-    //TODO REMOVE LECTURE METHOD WILL BE ADDED
+    //TODO REMOVE Student METHOD WILL BE ADDED
 }

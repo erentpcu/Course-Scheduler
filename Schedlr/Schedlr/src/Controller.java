@@ -1,3 +1,5 @@
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,13 +10,20 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Controller {
     @FXML private ListView<String> studentsListView;
     @FXML private ListView<String> classroomsListView;
     @FXML private ListView<String> lecturesListView;
+    @FXML private TextField lecturesSearchBar;
+    @FXML private TextField studentsSearchBar; // Added for student search
+    @FXML private TextField classroomsSearchBar; // Added for classroom search
 
     private List<Lecture> lectureList; // Added lectureList to store Lecture objects.
+    private List<Student> studentList; // Added studentList for search functionality
+    private List<Classroom> classroomList; // Added classroomList for search functionality
+
 
     // Sample data for students and classrooms
     private final String[] students = {"John Doe", "Jane Smith", "Alex Brown"};
@@ -28,13 +37,76 @@ public class Controller {
         lectureList.add(new Lecture(2, "Physics 102", new TimeSlot("Tuesday", "1 PM","3 PM"), 25));
         lectureList.add(new Lecture(3, "Chemistry 103", new TimeSlot("Wednesday","9 AM","11 AM"), 20));
 
+        // Initialize studentList and classroomList with sample data.
+        studentList = new ArrayList<>();
+        studentList.add(new Student(1,"John Doe"));
+        studentList.add(new Student(2,"Jane Smith"));
+        studentList.add(new Student(3,"Alex Brown"));
+
+        classroomList = new ArrayList<>();
+        classroomList.add(new Classroom("Room 101",20));
+        classroomList.add(new Classroom("Room 102",50));
+        classroomList.add(new Classroom("Room 103",35));
+
+        refreshLectureListView();
+        refreshStudentListView();
+        refreshClassroomListView();
+
+
+        // Populate the ListViews with sample data for students and classrooms.
+        studentsListView.getItems().addAll(students);
+        classroomsListView.getItems().addAll(classrooms);
+
+        // Add listener to the lecturesSearchBar for filtering lectures,classrooms and students.
+        lecturesSearchBar.textProperty().addListener((observable, oldValue, newValue) -> searchLecture(newValue));
+        studentsSearchBar.textProperty().addListener((observable, oldValue, newValue) -> searchStudent(newValue));
+        classroomsSearchBar.textProperty().addListener((observable, oldValue, newValue) -> searchClassroom(newValue));
+
+
+
+        // Add listener to the lecturesSearchBar for filtering
+        lecturesSearchBar.textProperty().addListener(new ChangeListener<>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                searchLecture(newValue);
+            }
+        });
+
+        // Add listener to the lecturesSearchBar for filtering
+        studentsSearchBar.textProperty().addListener(new ChangeListener<>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                searchStudent(newValue);
+            }
+        });
+
+        // Add listener to the lecturesSearchBar for filtering
+        classroomsSearchBar.textProperty().addListener(new ChangeListener<>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                searchClassroom(newValue);
+            }
+        });
+
+
         // Populate the ListViews with sample data for students, classrooms, and lectures.
         studentsListView.getItems().addAll(students);
         classroomsListView.getItems().addAll(classrooms);
 
+
         for (Lecture lecture : lectureList) {
             lecturesListView.getItems().add(lecture.getName());
         }
+
+        for (Student student : studentList) {
+            studentsListView.getItems().add(student.getName());
+        }
+
+        for (Classroom classroom : classroomList) {
+            classroomsListView.getItems().add(classroom.getId());
+        }
+
+
 
         // Add event listeners for ListView items.
         studentsListView.setCellFactory(param -> createListCell("Student"));
@@ -109,9 +181,95 @@ public class Controller {
         }
     }
 
+    // Method to refresh the lecturesListView based on the current lectureList
+    private void refreshLectureListView() {
+        lecturesListView.getItems().clear();
+        for (Lecture lecture : lectureList) {
+            lecturesListView.getItems().add(lecture.getName());
+        }
+    }
+
+    // Method to refresh the studentListView based on the current studentList
+    private void refreshStudentListView() {
+        studentsListView.getItems().clear();
+        for (Student student : studentList) {
+            lecturesListView.getItems().add(student.getName());
+        }
+    }
+
+    // Method to refresh the classroomListView based on the current classrommList
+    private void refreshClassroomListView() {
+        classroomsListView.getItems().clear();
+        for (Classroom classroom : classroomList) {
+            classroomsListView.getItems().add(classroom.getId());
+        }
+    }
+
+    // Method to search for lectures by name and update the list view
+    private void searchLecture(String query) {
+        // Filter lectures based on the query (case insensitive)
+        List<String> filteredLectures = lectureList.stream()
+                .map(Lecture::getName)
+                .filter(name -> name.toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList());
+
+        // Update the lecturesListView with the filtered list
+        lecturesListView.getItems().setAll(filteredLectures);
+    }
+
+    // Method to search for students and update the ListView
+    private void searchStudent(String query) {
+        List<Student> filteredStudents = studentList.stream()
+                .filter(student -> student.getName().toLowerCase().contains(query.toLowerCase()))
+                .toList();
+
+        // Update the ListView with filtered student names
+        studentsListView.getItems().setAll(filteredStudents.stream()
+                .map(Student::getName)
+                .collect(Collectors.toList()));
+    }
+
+    // Method to search for classrooms and update the ListView
+    private void searchClassroom(String query) {
+        List<Classroom> filteredClassroom = classroomList.stream()
+                .filter(classroom -> classroom.getId().toLowerCase().contains(query.toLowerCase()))
+                .toList();
+
+        // Update the ListView with filtered student names
+        classroomsListView.getItems().setAll(filteredClassroom.stream()
+                .map(Classroom::getId)
+                .collect(Collectors.toList()));
+    }
 
     @FXML
     private TextField lectureSearchField; // Assuming you have a text field for searching lectures
+
+    @FXML
+    private void handleAddStudentButtonAction() {
+        try {
+            // Load the FXML for the addLecture pop-up
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AddStudent.fxml"));
+            AnchorPane layout = loader.load();
+
+            AddStudentController addStudentController = loader.getController();
+            addStudentController.setStudentList(studentList); // Pass the studentlist to the controller
+
+            // Create and configure the pop-up stage
+            Stage stage = new Stage();
+            stage.setScene(new Scene(layout));
+            stage.setTitle("Add New Student");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            // Refresh the studentsListView after adding a student
+            studentsListView.getItems().clear();
+            for (Student student : studentList) {
+                studentsListView.getItems().add(student.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void handleAddLectureButtonAction() {
@@ -145,13 +303,13 @@ public class Controller {
     // Method to handle opening student details in a pop-up window.
     private void openStudentDetailsWindow(String student) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("studentPopUpPage.fxml"));
-            AnchorPane layout = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("studentPopUpPage.fxml")); // Dosya yolunu kontrol edin
+            GridPane layout = loader.load();
 
             StudentPopUpController controller = loader.getController();
-            controller.setStudentDetails(student, "12345"); // Example student ID.
+            controller.setStudentDetails(student); // Set the student name
 
-            Stage stage = createPopUpStage("Student Details", layout);
+            Stage stage = createPopUpStage(student + "in ders programı", layout);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,7 +320,7 @@ public class Controller {
     private void openClassroomDetailsWindow(String classroom) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("classroomPopUpPage.fxml"));
-            AnchorPane layout = loader.load();
+            GridPane layout = loader.load();
 
             ClassroomPopUpController controller = loader.getController();
             controller.initialize(classroom); // Pass the selected classroom to the pop-up.
@@ -178,7 +336,7 @@ public class Controller {
     private void openLectureDetailsWindow(String lecture) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("lecturePopUpPage.fxml"));
-            AnchorPane layout = loader.load();
+            GridPane layout = loader.load();
 
             LecturePopUpController controller = loader.getController();
             controller.initialize(lecture); // Pass the selected lecture to the pop-up.
@@ -191,7 +349,7 @@ public class Controller {
     }
 
     // Utility method to create and configure a new Stage for pop-ups.
-    private Stage createPopUpStage(String title, AnchorPane layout) {
+    private Stage createPopUpStage(String title, GridPane layout) {
         Stage stage = new Stage();
         stage.setScene(new Scene(layout, 400, 400));
         stage.setTitle(title);
