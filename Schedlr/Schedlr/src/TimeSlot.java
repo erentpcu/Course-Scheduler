@@ -9,6 +9,18 @@ public class TimeSlot {
         this.endTime = endTime;
     }
 
+    public String getDay() {
+        return day;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
     public boolean overlaps(TimeSlot other) {
         if (!this.day.equals(other.day)) return false;
         return !(this.endTime.compareTo(other.startTime) <= 0 || this.startTime.compareTo(other.endTime) >= 0);
