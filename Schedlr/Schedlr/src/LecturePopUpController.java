@@ -1,21 +1,18 @@
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+
+import java.util.List;
 
 public class LecturePopUpController {
     @FXML private Label lectureNameLabel;
-    @FXML private TableView<String> scheduleTable;
-    @FXML private TableColumn<String, String> dayColumn;
-    @FXML private TableColumn<String, String> timeColumn;
+    @FXML private ListView<String> studentsListView;
 
     // Set lecture data in the pop-up
-    public void initialize(String lecture) {
+    public void initialize(String lecture, List<String> registeredStudents) {
         lectureNameLabel.setText("Lecture: " + lecture);
 
-        // Sample data for the lecture schedule
-        scheduleTable.getItems().add("Monday 9:00 AM - Math 101");
-        scheduleTable.getItems().add("Tuesday 10:00 AM - Physics 102");
-        scheduleTable.getItems().add("Wednesday 1:00 PM - Chemistry 103");
+        // Populate the ListView with registered students
+        studentsListView.getItems().addAll(registeredStudents);
     }
 }

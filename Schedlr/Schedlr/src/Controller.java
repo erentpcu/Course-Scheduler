@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -319,11 +320,14 @@ public class Controller {
     // Method to handle opening classroom details in a pop-up window.
     private void openClassroomDetailsWindow(String classroom) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("classroomPopUpPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/classroomPopUpPage.fxml")); // Dosya yolunu kontrol edin
             GridPane layout = loader.load();
 
             ClassroomPopUpController controller = loader.getController();
-            controller.initialize(classroom); // Pass the selected classroom to the pop-up.
+
+            // Assuming you have a method to get the schedule for a classroom
+            Map<String, Map<String, String>> classroomSchedule = getScheduleForClassroom(classroom);
+            controller.initialize(classroom, classroomSchedule); // Pass the selected classroom and schedule to the pop-up.
 
             Stage stage = createPopUpStage("Classroom Details", layout);
             stage.show();
@@ -332,20 +336,41 @@ public class Controller {
         }
     }
 
+    // Example method to get the schedule for a classroom
+    private Map<String, Map<String, String>> getScheduleForClassroom(String classroom) {
+        // This should return a map of day to time slots and lectures for the given classroom
+        // For now, returning a sample map
+        return Map.of(
+                "Monday", Map.of("08:30 - 09:25", "Math 101"),
+                "Tuesday", Map.of("09:25 - 10:20", "Physics 102"),
+                "Wednesday", Map.of("10:20 - 11:15", "Chemistry 103")
+        );
+    }
+
     // Method to handle opening lecture details in a pop-up window.
     private void openLectureDetailsWindow(String lecture) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("lecturePopUpPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/lecturePopUpPage.fxml")); // Dosya yolunu kontrol edin
             GridPane layout = loader.load();
 
             LecturePopUpController controller = loader.getController();
-            controller.initialize(lecture); // Pass the selected lecture to the pop-up.
+
+            // Assuming you have a method to get registered students for a lecture
+            List<String> registeredStudents = getRegisteredStudentsForLecture(lecture);
+            controller.initialize(lecture, registeredStudents); // Pass the selected lecture and students to the pop-up.
 
             Stage stage = createPopUpStage("Lecture Details", layout);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // Example method to get registered students for a lecture
+    private List<String> getRegisteredStudentsForLecture(String lecture) {
+        // This should return a list of student names registered for the given lecture
+        // For now, returning a sample list
+        return List.of("John Doe", "Jane Smith", "Alex Brown");
     }
 
     // Utility method to create and configure a new Stage for pop-ups.
