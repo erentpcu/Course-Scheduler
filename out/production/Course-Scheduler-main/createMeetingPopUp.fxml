@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="10" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CreateMeetingController">
+    <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Create a Meeting" />
+
+    <HBox spacing="10">
+        <Label prefHeight="17.0" prefWidth="29.0" text="Day:" />
+        <ComboBox fx:id="dayComboBox" prefHeight="25.0" prefWidth="115.0">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Monday" />
+                    <String fx:value="Tuesday" />
+                    <String fx:value="Wednesday" />
+                    <String fx:value="Thursday" />
+                    <String fx:value="Friday" />
+                    <String fx:value="Saturday" />
+                    <String fx:value="Sunday" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+    </HBox>
+
+    <HBox spacing="10">
+        <Label text="Time:" />
+        <ComboBox fx:id="timeComboBox">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="08:30 - 09:25" />
+                    <String fx:value="09:25 - 10:20" />
+                    <String fx:value="10:20 - 11:15" />
+                    <String fx:value="11:15 - 12:10" />
+                    <String fx:value="12:10 - 13:05" />
+                    <String fx:value="13:05 - 14:00" />
+                    <String fx:value="14:00 - 14:55" />
+                    <String fx:value="14:55 - 15:50" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+    </HBox>
+
+    <HBox spacing="10">
+        <VBox>
+            <Label text="Available Classrooms:" />
+            <ListView fx:id="availableClassroomsListView" prefHeight="100" />
+        </VBox>
+        <VBox>
+            <Label text="Available Students:" />
+            <ListView fx:id="availableStudentsListView" prefHeight="100" />
+        </VBox>
+        <VBox>
+            <Label text="Meeting Details:" />
+            <ListView fx:id="meetingDetailsListView" prefHeight="100" />
+        </VBox>
+    </HBox>
+
+    <Button onAction="#handleCreateMeeting" text="Create Meeting" />
+</VBox>

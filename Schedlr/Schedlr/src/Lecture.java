@@ -35,6 +35,10 @@ public class Lecture {
         return name;
     }
 
+    public void setStudentCount(int studentCount) {
+        this.studentCount = studentCount;
+    }
+
     public int getStudentCount() {
         return studentCount;
     }

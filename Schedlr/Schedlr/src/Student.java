@@ -14,6 +14,15 @@ public class Student {
 
     public void addLecture(Lecture lecture) {
         schedule.add(lecture);
+        lecture.enrollStudent(this);
+    }
+    public void removeLecture(Lecture lecture) {
+        if (schedule.remove(lecture)) {
+            lecture.getEnrolledStudents().remove(this);
+            lecture.setStudentCount(lecture.getStudentCount() - 1);
+        } else {
+            System.out.println("Lecture not found in the student's schedule.");
+        }
     }
 
     public List<Lecture> getSchedule() {
