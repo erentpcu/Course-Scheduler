@@ -1,15 +1,19 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Lecture {
-    private int id;
+    private String id;
     private String name;
     private TimeSlot timeSlot;
     private int studentCount;
     private List<Student> enrolledStudents;
     private Classroom assignedClassroom;
 
-    public Lecture(int id, String name, TimeSlot timeSlot, int studentCount) {
+    public Lecture(String id, String name, TimeSlot timeSlot, int studentCount) {
         this.id = id;
         this.name = name;
         this.timeSlot = timeSlot;
@@ -27,7 +31,7 @@ public class Lecture {
         return enrolledStudents;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -47,13 +51,54 @@ public class Lecture {
         return timeSlot;
     }
 
-    public static Lecture findLectureById(List<Lecture> lectures, int id) {
-        for (Lecture lecture : lectures) {
-            if (lecture.getId() == id) {
-                return lecture;
+    public static Lecture fetchById(String lectureId) {
+        String sql = "SELECT id, name, time_slot_id, student_count FROM lectures WHERE id = ?";
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, lectureId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String id = rs.getString("id");
+                    String name = rs.getString("name");
+                    int timeSlotId = rs.getInt("time_slot_id");
+                    int studentCount = rs.getInt("student_count");
+
+                    TimeSlot timeSlot = TimeSlot.fetchById(timeSlotId); // Assuming TimeSlot has fetchById
+                    return new Lecture(id, name, timeSlot, studentCount);
+                }
             }
+        } catch (Exception e) {
+            System.out.println("Error fetching lecture: " + e.getMessage());
         }
-        return null;
+        return null; // Return null if lecture not found
+    }
+
+    public void updateToDatabase() {
+        String sql = "UPDATE lectures SET name = ?, student_count = ?, time_slot_id = ? WHERE id = ?";
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, this.name);
+            pstmt.setInt(2, this.studentCount);
+            pstmt.setInt(3, this.timeSlot.getId());
+            pstmt.setString(4, this.id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error updating lecture: " + e.getMessage());
+        }
+    }
+
+    public void deleteFromDatabase() {
+        String sql = "DELETE FROM lectures WHERE id = ?";
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, this.id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error deleting lecture: " + e.getMessage());
+        }
     }
 
     public void assignClassroom(Classroom classroom) {
@@ -67,7 +112,7 @@ public class Lecture {
     }
 
     // Static method to add a new lecture to the lecture list
-    public static void addLecture(List<Lecture> lectureList, String name, int id, TimeSlot timeSlot, int capacity) {
+    public static void addLecture(List<Lecture> lectureList, String name, String id, TimeSlot timeSlot, int capacity) {
         Lecture newLecture = new Lecture(id, name, timeSlot, capacity);
         lectureList.add(newLecture);
     }
@@ -79,5 +124,19 @@ public class Lecture {
             return false; // Assuming no capacity exceeded if no classroom assigned
         }
         return studentCount > assignedClassroom.getCapacity();
+    }
+
+    public void saveToDatabase() {
+        String sql = "INSERT INTO lectures (id, name, time_slot_id) VALUES (?, ?, ?)";
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, this.id);
+            pstmt.setString(2, this.name);
+            pstmt.setInt(3, this.timeSlot.getId()); // Assuming TimeSlot has getId()
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error saving lecture to database: " + e.getMessage());
+        }
     }
 }

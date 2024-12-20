@@ -5,21 +5,19 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/Schedlr/Schedlr/src" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="22" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$USER_HOME$/Downloads/openjfx-21.0.5_windows-x64_bin-sdk/javafx-sdk-21.0.5/lib" />
+          <root url="file://$MODULE_DIR$/../../openjfx-21.0.5_windows-x64_bin-sdk/javafx-sdk-21.0.5/lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$USER_HOME$/Downloads/openjfx-21.0.5_windows-x64_bin-sdk/javafx-sdk-21.0.5/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../openjfx-21.0.5_windows-x64_bin-sdk/javafx-sdk-21.0.5/lib" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="Release 3.47.1.0 source code" level="project" />
-    <orderEntry type="library" name="lib1" level="project" />
-    <orderEntry type="library" name="lib2" level="project" />
+    <orderEntry type="library" name="sqlite-jdbc-3.47.1.0" level="project" />
   </component>
 </module>

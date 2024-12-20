@@ -1,3 +1,7 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +52,47 @@ public class Classroom {
         return capacity;
     }
 
+    // Fetch all classrooms from the database
+    public static List<Classroom> fetchAllClassrooms() {
+        String sql = "SELECT * FROM classrooms";
+        List<Classroom> classrooms = new ArrayList<>();
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                int capacity = rs.getInt("capacity");
+                classrooms.add(new Classroom(id, capacity));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching classrooms: " + e.getMessage());
+        }
+
+        return classrooms;
+    }
+
+    public boolean isClassroomAvailable(String day, String time) {
+        String sql = "SELECT * FROM classroom_schedule WHERE classroom_id = ? AND day = ? AND time_slot = ?";
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, this.id);
+            pstmt.setString(2, day);
+            pstmt.setString(3, time);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean("available");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error checking availability: " + e.getMessage());
+        }
+        return false; // Default to unavailable
+    }
+
     public static Classroom findClassroomById(List<Classroom> classrooms, String id) {
         for (Classroom classroom : classrooms) {
             if (classroom.getId().equals(id)) {
@@ -56,6 +101,7 @@ public class Classroom {
         }
         return null;
     }
+
     public boolean isAvailable(String day, String time) {
         // Check if the specified day and time slot is available
         Map<String, Boolean> daySchedule = schedule.get(day.toUpperCase());
@@ -66,7 +112,7 @@ public class Classroom {
         return false;
     }
 
-    public boolean reserve(String day, String startTime, String endTime, String lectureName, int lectureId, int studentCount) {
+    public boolean reserve(String day, String startTime, String endTime, String lectureName, String lectureId, int studentCount) {
         // Reserve the specified day and time slot and associate it with a lecture
         Map<String, Boolean> daySchedule = schedule.get(day.toUpperCase());
         String time = startTime + " - " + endTime;
@@ -74,7 +120,7 @@ public class Classroom {
         if (daySchedule != null && daySchedule.containsKey(time)) {
             if (daySchedule.get(time)) {
                 daySchedule.put(time, false); // Mark as reserved
-                TimeSlot timeSlot = new TimeSlot(day, startTime, endTime);
+                TimeSlot timeSlot = new TimeSlot(1, day, startTime, endTime);
                 Lecture newLecture = new Lecture(lectureId, lectureName, timeSlot, studentCount);
                 addLecture(newLecture);
                 System.out.println("Classroom " + id + " reserved for " + lectureName + " on " + day + " from " + startTime + " to " + endTime);
@@ -113,8 +159,21 @@ public class Classroom {
         return false;
     }
 
+    public void saveToDatabase() {
+        String sql = "INSERT INTO classrooms (id, capacity) VALUES (?, ?)";
 
-    //todo availability attribute
-    //todo isAvailable()
-    //todo reserve()
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, this.id);
+            pstmt.setInt(2, this.capacity);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error saving classroom to database: " + e.getMessage());
+        }
+
+
+        //todo availability attribute
+        //todo isAvailable()
+        //todo reserve()
+    }
 }

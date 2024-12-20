@@ -1,3 +1,6 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Scheduler {
@@ -21,6 +24,10 @@ public class Scheduler {
             if (selectedClassroom != null) {
                 selectedClassroom.addLecture(lecture);
                 lecture.assignClassroom(selectedClassroom);
+
+                // Save the assignment to the database
+                saveClassroomAssignmentToDatabase(selectedClassroom, lecture);
+
                 System.out.println("Assigned Lecture " + lecture.getId() +
                         " (" + lecture.getName() + ") to Classroom " + selectedClassroom.getId());
             } else {
@@ -31,13 +38,30 @@ public class Scheduler {
     }
 
     private boolean isClassroomAvailable(Classroom classroom, TimeSlot timeSlot) {
-        for (Lecture lecture : classroom.getLectures()) {
-            if (lecture.getTimeSlot().overlaps(timeSlot)) {
-                return false;
-            }
+        try {
+            return classroom.isClassroomAvailable(timeSlot.getDay(), timeSlot.getStartTime() + " - " + timeSlot.getEndTime());
+        } catch (Exception e) {
+            System.out.println("Error checking classroom availability: " + e.getMessage());
+            return false;
         }
-        return true;
+    }
+
+    private void saveClassroomAssignmentToDatabase(Classroom classroom, Lecture lecture) {
+        String sql = """
+            INSERT INTO classroom_schedule (classroom_id, day, time_slot, lecture_id, available)
+            VALUES (?, ?, ?, ?, ?)
+        """;
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, classroom.getId());
+            pstmt.setString(2, lecture.getTimeSlot().getDay());
+            pstmt.setString(3, lecture.getTimeSlot().getStartTime() + " - " + lecture.getTimeSlot().getEndTime());
+            pstmt.setString(4, lecture.getId());
+            pstmt.setBoolean(5, false); // Mark the slot as reserved
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error saving classroom assignment to database: " + e.getMessage());
+        }
     }
 }
-
-//todo findcommonfreetime()

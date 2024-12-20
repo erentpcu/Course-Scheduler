@@ -3,7 +3,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 public class AddStudentController {
     @FXML private TextField studentNameField;
@@ -12,12 +13,6 @@ public class AddStudentController {
     @FXML private Button addButton;
     @FXML private Button cancelButton;
 
-    private List<Student> studentList;
-
-    public void setStudentList(List<Student> studentList) {
-        this.studentList = studentList;
-    }
-
     @FXML
     private void AddStudentButtonAction() {
         try {
@@ -25,14 +20,29 @@ public class AddStudentController {
             String surname = studentSurnameField.getText();
             int id = Integer.parseInt(studentIdField.getText());
 
-            // Add the new student to the list
-            // Student.addStudent(studentList, name, surname, id);
+            // Save the new student to the database
+            String fullName = name + " " + surname;
+            saveStudentToDatabase(id, fullName);
 
             // Close the pop-up
             Stage stage = (Stage) addButton.getScene().getWindow();
             stage.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void saveStudentToDatabase(int id, String name) {
+        String sql = "INSERT INTO students (id, name) VALUES (?, ?)";
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            pstmt.setString(2, name);
+            pstmt.executeUpdate();
+            System.out.println("Student added to the database: " + name);
+        } catch (Exception e) {
+            System.out.println("Error saving student to database: " + e.getMessage());
         }
     }
 

@@ -2,15 +2,27 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ClassroomPopUpController {
     @FXML private Label classroomNameLabel;
     @FXML private GridPane gridPane;
 
-    // Method to set classroom details
-    public void initialize(String classroom, Map<String, Map<String, String>> schedule) {
-        classroomNameLabel.setText("Classroom: " + classroom);
+    /**
+     * Initialize the classroom schedule display for the given classroom ID.
+     *
+     * @param classroomId The ID of the classroom.
+     */
+    public void initialize(String classroomId) {
+        classroomNameLabel.setText("Classroom: " + classroomId);
+
+        // Fetch schedule from the database
+        Map<String, Map<String, String>> schedule = fetchScheduleFromDatabase(classroomId);
 
         // Populate the GridPane with the classroom schedule
         for (Map.Entry<String, Map<String, String>> dayEntry : schedule.entrySet()) {
@@ -31,6 +43,43 @@ public class ClassroomPopUpController {
                 }
             }
         }
+    }
+
+    /**
+     * Fetch the classroom schedule from the database.
+     *
+     * @param classroomId The ID of the classroom.
+     * @return A nested map where the outer map's key is the day, and the inner map's key is the time slot.
+     */
+    private Map<String, Map<String, String>> fetchScheduleFromDatabase(String classroomId) {
+        String sql = """
+            SELECT cs.day, cs.time_slot, l.name AS lecture_name
+            FROM classroom_schedule cs
+            LEFT JOIN lectures l ON cs.lecture_id = l.id
+            WHERE cs.classroom_id = ?
+        """;
+
+        Map<String, Map<String, String>> schedule = new HashMap<>();
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, classroomId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String day = rs.getString("day");
+                    String timeSlot = rs.getString("time_slot");
+                    String lectureName = rs.getString("lecture_name");
+
+                    schedule.computeIfAbsent(day, k -> new HashMap<>())
+                            .put(timeSlot, lectureName != null ? lectureName : "Available");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching classroom schedule: " + e.getMessage());
+        }
+
+        return schedule;
     }
 
     private int getColumnIndexForDay(String day) {
@@ -58,5 +107,50 @@ public class ClassroomPopUpController {
             case "14:55 - 15:50": return 9;
             default: return -1;
         }
+    }
+
+    /**
+     * Save a new classroom to the database.
+     *
+     * @param id       The classroom ID.
+     * @param capacity The capacity of the classroom.
+     */
+    public void saveClassroomToDatabase(String id, int capacity) {
+        String sql = "INSERT INTO classrooms (id, capacity) VALUES (?, ?)";
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            pstmt.setInt(2, capacity);
+            pstmt.executeUpdate();
+            System.out.println("Classroom added to database: " + id);
+        } catch (SQLException e) {
+            System.out.println("Error saving classroom to database: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Fetch classroom details from the database.
+     *
+     * @param classroomId The ID of the classroom.
+     * @return The Classroom object if found, or null otherwise.
+     */
+    public Classroom fetchClassroomFromDatabase(String classroomId) {
+        String sql = "SELECT * FROM classrooms WHERE id = ?";
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, classroomId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String id = rs.getString("id");
+                    int capacity = rs.getInt("capacity");
+                    return new Classroom(id, capacity);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching classroom: " + e.getMessage());
+        }
+        return null;
     }
 }
