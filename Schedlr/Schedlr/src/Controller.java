@@ -373,6 +373,22 @@ public class Controller {
         return List.of("John Doe", "Jane Smith", "Alex Brown");
     }
 
+    @FXML
+    private void handleCreateMeetingMenuAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/createMeetingPopUp.fxml"));
+            VBox layout = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(layout));
+            stage.setTitle("Create a Meeting");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // Utility method to create and configure a new Stage for pop-ups.
     private Stage createPopUpStage(String title, GridPane layout) {
         Stage stage = new Stage();
