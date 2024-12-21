@@ -24,12 +24,50 @@ public class AddLectureController {
 
     @FXML
     public void initialize() {
-        // Load students into ListView with checkboxes
         loadStudents();
 
-        // Load classrooms into ComboBox
-        loadClassrooms();
-    }
+        // Day ve Time ComboBox'ları değiştiğinde sınıfları güncelle
+        dayComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && timeComboBox.getValue() != null) {
+                updateAvailableClassrooms(newVal, timeComboBox.getValue());
+            }
+        });
+        timeComboBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && dayComboBox.getValue() != null) {
+                updateAvailableClassrooms(dayComboBox.getValue(), newVal);
+            }
+        });}
+    private void updateAvailableClassrooms(String selectedDay, String selectedTime) {
+        classroomComboBox.getItems().clear();
+
+        String sql = """
+       SELECT DISTINCT c.id 
+       FROM classrooms c 
+       WHERE NOT EXISTS (
+           SELECT 1 
+           FROM classroom_schedule cs 
+           WHERE cs.classroom_id = c.id 
+           AND cs.day = ? 
+           AND cs.time_slot = ? 
+           AND cs.available = false
+       )
+       ORDER BY c.id
+   """;
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, selectedDay);
+            pstmt.setString(2, selectedTime);
+
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                classroomComboBox.getItems().add(rs.getString("id"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error loading available classrooms: " + e.getMessage());
+            e.printStackTrace();
+        }}
 
     private void loadStudents() {
         ObservableList<CheckBox> studentCheckBoxes = FXCollections.observableArrayList();

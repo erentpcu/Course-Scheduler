@@ -25,6 +25,7 @@ public class DatabaseInitializer {
            end_time TEXT NOT NULL
        );
    """;
+
         String createLecturesTable = """
        CREATE TABLE IF NOT EXISTS lectures (
            id TEXT PRIMARY KEY,
@@ -45,6 +46,38 @@ public class DatabaseInitializer {
            FOREIGN KEY (lecture_id) REFERENCES lectures(id)
        );
    """;
+        String createMeetingsTable = """
+           CREATE TABLE IF NOT EXISTS meetings (
+               id TEXT PRIMARY KEY,
+               name TEXT DEFAULT 'Meeting',
+               day TEXT NOT NULL,
+               start_time TEXT NOT NULL,
+               end_time TEXT NOT NULL,
+               classroom_id TEXT,
+               FOREIGN KEY (classroom_id) REFERENCES classrooms(id)
+           );
+       """;
+        String createMeetingParticipantsTable = """
+           CREATE TABLE IF NOT EXISTS meeting_participants (
+               meeting_id TEXT,
+               student_id INTEGER,
+               PRIMARY KEY (meeting_id, student_id),
+               FOREIGN KEY (meeting_id) REFERENCES meetings(id),
+               FOREIGN KEY (student_id) REFERENCES students(id)
+           );
+       """;
+        String createMeetingScheduleTable = """
+           CREATE TABLE IF NOT EXISTS meeting_schedule (
+               classroom_id TEXT,
+               day TEXT,
+               time_slot TEXT,
+               meeting_id TEXT,
+               available BOOLEAN DEFAULT TRUE,
+               PRIMARY KEY (classroom_id, day, time_slot),
+               FOREIGN KEY (classroom_id) REFERENCES classrooms(id),
+               FOREIGN KEY (meeting_id) REFERENCES meetings(id)
+           );
+       """;
         String createClassroomScheduleTable = """
        CREATE TABLE IF NOT EXISTS classroom_schedule (
            classroom_id TEXT,
@@ -96,6 +129,9 @@ public class DatabaseInitializer {
             stmt.execute(createLecturesTable);
             stmt.execute(createStudentScheduleTable);
             stmt.execute(createClassroomScheduleTable);
+            stmt.execute(createMeetingsTable);
+            stmt.execute(createMeetingParticipantsTable);
+            stmt.execute(createMeetingScheduleTable);
             // Sınıf verilerini ekle (INSERT OR IGNORE sayesinde var olanları tekrar eklemez)
             stmt.execute(insertClassroomsData);
             System.out.println("Database tables created and classroom data inserted successfully.");

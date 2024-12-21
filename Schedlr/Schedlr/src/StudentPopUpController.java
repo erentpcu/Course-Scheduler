@@ -41,32 +41,47 @@ public class StudentPopUpController {
 
     private void populateStudentSchedule(String studentId) {
         String sql = """
-       SELECT t.day, t.start_time, l.name,
-              CAST(
-                  (strftime('%s', t.end_time) - strftime('%s', t.start_time)) / (55 * 60) 
-                  AS INTEGER
-              ) as duration
-       FROM student_schedule ss
-       INNER JOIN lectures l ON ss.lecture_id = l.id
-       INNER JOIN time_slots t ON l.time_slot_id = t.id
-       WHERE ss.student_id = ?
+       SELECT day, start_time, name, duration
+       FROM (
+           -- Dersler için sorgu
+           SELECT t.day, t.start_time, l.name,
+               CAST((strftime('%s', t.end_time) - strftime('%s', t.start_time)) / (55 * 60) AS INTEGER) as duration
+           FROM student_schedule ss
+           INNER JOIN lectures l ON ss.lecture_id = l.id
+           INNER JOIN time_slots t ON l.time_slot_id = t.id
+           WHERE ss.student_id = ?
+           
+           UNION ALL
+           
+           -- Toplantılar için sorgu
+           SELECT m.day, m.start_time, 'Meeting' as name,
+               1 as duration  -- Toplantılar için 1 slot süre
+           FROM meeting_participants mp
+           JOIN meetings m ON mp.meeting_id = m.id
+           WHERE mp.student_id = ?
+       ) combined
+       ORDER BY day, start_time
    """;
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, studentId);
+            pstmt.setString(2, studentId);
+
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 String day = rs.getString("day");
                 String startTime = rs.getString("start_time");
-                String lectureName = rs.getString("name");
+                String activityName = rs.getString("name");
                 int duration = rs.getInt("duration");
-                System.out.println("Adding lecture: " + lectureName + " on " + day + " at " + startTime + " for " + duration + " slots"); // Debug için
-                addLectureToSchedule(day, startTime, lectureName, duration);
+
+                addLectureToSchedule(day, startTime, activityName, duration);
             }
         } catch (SQLException e) {
             System.out.println("Error fetching student schedule: " + e.getMessage());
             e.printStackTrace();
         }
+
 
     }
 

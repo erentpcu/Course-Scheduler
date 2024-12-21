@@ -12,39 +12,67 @@ public class ClassroomPopUpController {
     @FXML private Label classroomNameLabel;
     @FXML private GridPane gridPane;
     public void initialize(String classroomId) {
-        classroomNameLabel.setText("Classroom " + classroomId + " Schedule");
+        System.out.println("Initializing classroom schedule for: " + classroomId); // Debug için
+
+        // Sınıf adı ve kapasitesini al
+        String sql = "SELECT id, capacity FROM classrooms WHERE id = ?";
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, classroomId);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                int capacity = rs.getInt("capacity");
+                classroomNameLabel.setText("Classroom " + classroomId + " (Capacity: " + capacity + ") Schedule");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         populateClassroomSchedule(classroomId);
     }
     private void populateClassroomSchedule(String classroomId) {
         String sql = """
-       SELECT l.name, t.day, t.start_time, t.end_time,
-              CAST(
-                  (strftime('%s', t.end_time) - strftime('%s', t.start_time)) / (55 * 60) 
-                  AS INTEGER
-              ) + 1 as duration
-       FROM classroom_schedule cs
-       JOIN lectures l ON cs.lecture_id = l.id
-       JOIN time_slots t ON l.time_slot_id = t.id
-       WHERE cs.classroom_id = ? AND cs.available = false
+       SELECT day, start_time, name, duration
+       FROM (
+           -- Dersler için sorgu
+           SELECT t.day, t.start_time, l.name,
+               CAST((strftime('%s', t.end_time) - strftime('%s', t.start_time)) / (55 * 60) AS INTEGER) as duration
+           FROM lectures l
+           INNER JOIN time_slots t ON l.time_slot_id = t.id
+           WHERE l.classroom_id = ?
+           
+           UNION ALL
+           
+           -- Toplantılar için sorgu
+           SELECT m.day, m.start_time, 'Meeting' as name,
+               1 as duration  -- Toplantılar için 1 slot süre
+           FROM meeting_schedule ms
+           JOIN meetings m ON ms.meeting_id = m.id
+           WHERE ms.classroom_id = ?
+       ) combined
+       ORDER BY day, start_time
    """;
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, classroomId);
+            pstmt.setString(2, classroomId);
+
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 String day = rs.getString("day");
                 String startTime = rs.getString("start_time");
-                String lectureName = rs.getString("name");
+                String activityName = rs.getString("name");
                 int duration = rs.getInt("duration");
-                System.out.println("Adding lecture to classroom schedule: " + lectureName +
-                        " on " + day + " at " + startTime +
-                        " for " + duration + " slots"); // Debug için
-                addLectureToSchedule(day, startTime, lectureName, duration);
+
+                addLectureToSchedule(day, startTime, activityName, duration);
             }
         } catch (SQLException e) {
             System.out.println("Error fetching classroom schedule: " + e.getMessage());
             e.printStackTrace();
         }
+
     }
     private void addLectureToSchedule(String day, String startTime, String lectureName, int duration) {
         int columnIndex = getColumnIndexForDay(day);

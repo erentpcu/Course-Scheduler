@@ -294,14 +294,16 @@ public class Controller {
 
 
     // Handle opening classroom details in a pop-up
-    private void openClassroomDetailsWindow(String classroomId) {
+    private void openClassroomDetailsWindow(String classroomText) {
         try {
+            // "(Capacity: XX)" kısmını kaldırıp sadece classroom ID'yi al
+            String classroomId = classroomText.split(" \\(")[0];
+
+            System.out.println("Opening details for classroom: " + classroomId); // Debug için
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ClassroomPopUpPage.fxml"));
             VBox root = loader.load();
-
             ClassroomPopUpController controller = loader.getController();
             controller.initialize(classroomId);
-
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -311,6 +313,7 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @FXML
