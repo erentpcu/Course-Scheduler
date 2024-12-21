@@ -17,8 +17,8 @@
         <jarDirectory url="file://C:/Users/openjfx-21.0.5_windows-x64_bin-sdk/javafx-sdk-21.0.5/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="sqlite-jdbc-3.47.1.0" level="project" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="lib1" level="project" />
-    <orderEntry type="library" name="sqlite-jdbc-3.47.1.01" level="project" />
   </component>
 </module>

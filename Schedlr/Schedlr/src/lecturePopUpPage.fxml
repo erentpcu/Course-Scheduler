@@ -2,14 +2,38 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="LecturePopUpController" hgap="10" vgap="10">
-    <!-- Header -->
-    <HBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" alignment="CENTER">
-        <Label fx:id="lectureNameLabel" text="Lecture Details" style="-fx-font-size: 16; -fx-font-weight: bold;" />
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="LecturePopUpController"
+      spacing="10"
+      style="-fx-padding: 20;">
+
+    <!-- Header with Course Info -->
+    <VBox alignment="CENTER" style="-fx-padding: 0 0 20 0;">
+        <Label fx:id="courseCodeLabel" style="-fx-font-size: 24; -fx-font-weight: bold;"/>
+        <Label fx:id="lecturerLabel" style="-fx-font-size: 14;"/>
+        <Label fx:id="timeLabel" style="-fx-font-size: 14;"/>
+        <Label fx:id="durationLabel" style="-fx-font-size: 14;"/>
+        <Label fx:id="classroomLabel" style="-fx-font-size: 14;"/>
+    </VBox>
+
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="addButton" text="Add Students" onAction="#handleAddStudents"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button fx:id="deleteButton" text="Delete Students" onAction="#handleDeleteStudents"
+                style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
     </HBox>
 
     <!-- Students List -->
-    <Label text="Registered Students:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-    <ListView fx:id="studentsListView" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" />
-</GridPane>
+    <VBox VBox.vgrow="ALWAYS">
+        <Label text="Enrolled Students:" style="-fx-font-size: 14;"/>
+        <ListView fx:id="studentsListView" VBox.vgrow="ALWAYS"/>
+    </VBox>
+
+    <!-- Save Button (Initially Hidden) -->
+    <Button fx:id="saveButton" text="Save Changes" onAction="#handleSaveChanges"
+            style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+            visible="false" maxWidth="Infinity"/>
+</VBox>
