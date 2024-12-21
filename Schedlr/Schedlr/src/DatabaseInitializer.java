@@ -12,15 +12,16 @@ public class DatabaseInitializer {
         """;
 
         String createLecturesTable = """
-            CREATE TABLE IF NOT EXISTS lectures (
-                id TEXT PRIMARY KEY,
-                name TEXT NOT NULL,
-                classroom_id TEXT,
-                time_slot_id INTEGER NOT NULL,
-                FOREIGN KEY (classroom_id) REFERENCES classrooms (id),
-                FOREIGN KEY (time_slot_id) REFERENCES time_slots (id)
-            );
-        """;
+    CREATE TABLE IF NOT EXISTS lectures (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        lecturer TEXT,           // Yeni eklenen alan
+        classroom_id TEXT,
+        time_slot_id INTEGER NOT NULL,
+        FOREIGN KEY (classroom_id) REFERENCES classrooms (id),
+        FOREIGN KEY (time_slot_id) REFERENCES time_slots (id)
+    );
+""";
 
         String createClassroomsTable = """
             CREATE TABLE IF NOT EXISTS classrooms (

@@ -1,16 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="AddLectureController" prefWidth="300" prefHeight="200">
-    <VBox spacing="10" alignment="CENTER" prefWidth="300" prefHeight="200">
-        <Label text="Add New Lecture" style="-fx-font-size: 16; -fx-font-weight: bold;" />
-        <TextField fx:id="lectureNameField" promptText="Lecture Name" />
-        <TextField fx:id="lectureIdField" promptText="Lecture ID" />
-        <TextField fx:id="timeSlotField" promptText="Time Slot (e.g., Monday,10 AM,12 PM)" />
-        <HBox spacing="10" alignment="CENTER">
-            <Button fx:id="addButton" text="Add" onAction="#handleAddButtonAction" />
-            <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancelButtonAction" />
-        </HBox>
-    </VBox>
-</AnchorPane>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="AddLectureController"
+      spacing="10" style="-fx-padding: 20;" prefWidth="400" prefHeight="500">
+
+    <Label text="Add New Course" style="-fx-font-size: 16; -fx-font-weight: bold;" />
+
+    <!-- Name Field -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Name" prefWidth="80" />
+        <TextField fx:id="lectureNameField" HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- Date/Time Selection -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Date/Time" prefWidth="80" />
+        <ComboBox fx:id="dayComboBox" prefWidth="150">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Monday" />
+                    <String fx:value="Tuesday" />
+                    <String fx:value="Wednesday" />
+                    <String fx:value="Thursday" />
+                    <String fx:value="Friday" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <ComboBox fx:id="timeComboBox" prefWidth="100">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="08:30" />
+                    <String fx:value="09:25" />
+                    <String fx:value="10:20" />
+                    <String fx:value="11:15" />
+                    <String fx:value="12:10" />
+                    <String fx:value="13:05" />
+                    <String fx:value="14:00" />
+                    <String fx:value="14:55" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+    </HBox>
+
+    <!-- Lecturer Field -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Lecturer" prefWidth="80" />
+        <TextField fx:id="lecturerField" HBox.hgrow="ALWAYS" />
+    </HBox>
+
+    <!-- Students List -->
+    <Label text="Students" />
+    <ListView fx:id="studentsListView" VBox.vgrow="ALWAYS" prefHeight="200">
+        <placeholder>
+            <Label text="No students available" />
+        </placeholder>
+    </ListView>
+
+    <!-- Classroom Selection -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Classroom" prefWidth="80" />
+        <ComboBox fx:id="classroomComboBox" prefWidth="150" />
+    </HBox>
+
+    <!-- Duration Field -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Duration" prefWidth="80" />
+        <Spinner fx:id="durationSpinner" prefWidth="100">
+            <valueFactory>
+                <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="5" initialValue="1" />
+            </valueFactory>
+        </Spinner>
+    </HBox>
+
+    <!-- Add Course Button -->
+    <Button fx:id="addButton" text="Add Course"
+            onAction="#handleAddButtonAction"
+            style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
+            maxWidth="Infinity" />
+
+</VBox>

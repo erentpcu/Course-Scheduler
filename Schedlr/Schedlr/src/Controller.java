@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -244,26 +245,23 @@ public class Controller {
 
 
 
-    // Handle opening lecture details in a pop-up
     private void openLectureDetailsWindow(String lectureName) {
         try {
-            // Fetch the lecture ID based on the lecture name
             String lectureId = fetchLectureIdByName(lectureName);
-
             if (lectureId == null) {
                 System.out.println("Lecture not found for name: " + lectureName);
                 return;
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("LecturePopUpPage.fxml"));
-            GridPane layout = loader.load();
+            VBox layout = loader.load();
 
             LecturePopUpController controller = loader.getController();
             controller.initialize(lectureId);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(layout));
-            stage.setTitle("Lecture Details");
+            stage.setTitle("Course Info");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (Exception e) {
@@ -326,7 +324,6 @@ public class Controller {
         }
     }
 
-
     private ListCell<String> createListCell(String type) {
         return new ListCell<>() {
             @Override
@@ -344,30 +341,27 @@ public class Controller {
                     Region spacer = new Region();
                     HBox.setHgrow(spacer, Priority.ALWAYS);
 
-                    // Remove button
-                    Button removeButton = new Button("X");
-                    removeButton.setStyle("-fx-background-color: darkred; -fx-text-fill: white;");
-                    removeButton.setOnAction(event -> {
-                        getListView().getItems().remove(item); // Remove from the ListView
-                        if ("Lecture".equals(type)) {
-                            // Additional logic for lectures
-                            //removeLectureByName(item);
-                        }
-                    });
+                    HBox cellContent = new HBox(itemLabel, spacer);
 
-                    // HBox for layout
-                    HBox cellLayout = new HBox(10, itemLabel, spacer, removeButton);
-                    cellLayout.setStyle("-fx-alignment: center-left;");
+                    if ("Lecture".equals(type)) {
+                        // Add remove button only for lectures
+                        Button removeButton = new Button("X");
+                        removeButton.setStyle("-fx-background-color: darkred; -fx-text-fill: white;");
+                        removeButton.setOnAction(event -> handleRemoveLecture(item));
+                        cellContent.getChildren().add(removeButton);
+                    }
 
-                    setGraphic(cellLayout);
+                    setGraphic(cellContent);
 
-                    // Double-click handler
+                    // Double-click to open pop-up.
                     setOnMouseClicked(event -> {
                         if (event.getClickCount() == 2) {
-                            switch (type) {
-                                case "Student" -> openStudentDetailsWindow(item);
-                                case "Classroom" -> openClassroomDetailsWindow(item);
-                                case "Lecture" -> openLectureDetailsWindow(item);
+                            if (type.equals("Student")) {
+                                openStudentDetailsWindow(item);
+                            } else if (type.equals("Classroom")) {
+                                openClassroomDetailsWindow(item);
+                            } else if (type.equals("Lecture")) {
+                                openLectureDetailsWindow(item);
                             }
                         }
                     });
@@ -375,5 +369,40 @@ public class Controller {
             }
         };
     }
+    // Handle remove lecture action
+    private void handleRemoveLecture(String lectureName) {
+        // Confirmation dialog
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Confirm Deletion");
+        confirmationAlert.setHeaderText("Are you sure you want to delete this lecture?");
+        confirmationAlert.setContentText("Lecture: " + lectureName);
 
+        Optional<ButtonType> result = confirmationAlert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Proceed with deletion
+            String sql = "DELETE FROM lectures WHERE name = ?";
+
+            try (Connection conn = Database.connect();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+                pstmt.setString(1, lectureName);
+                int rowsAffected = pstmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Lecture removed: " + lectureName);
+                    refreshLecturesListView(); // Refresh the full list
+                    lecturesSearchBar.clear(); // Clear the search bar to reset the filtered view
+                } else {
+                    System.out.println("Lecture not found in database: " + lectureName);
+                }
+
+            } catch (SQLException e) {
+                System.out.println("Error removing lecture: " + e.getMessage());
+            }
+        } else {
+            // User canceled the deletion
+            System.out.println("Deletion canceled by user.");
+        }
+    }
 }
