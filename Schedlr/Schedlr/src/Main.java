@@ -19,8 +19,6 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         stage.setTitle("Scheduler");
 
-        Controller.allocateClassroomsForExistingLectures();
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/MainPage.fxml"));
         Scene scene = new Scene(loader.load());
 
