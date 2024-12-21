@@ -218,9 +218,8 @@ public class Controller {
     // Handle opening student details in a pop-up
     private void openStudentDetailsWindow(String studentName) {
         try {
-            System.out.println("Opening details for studentName: " + studentName); // Debugging line
+            System.out.println("Opening details for studentName: " + studentName);
 
-            // Fetch the studentId based on the studentName
             String studentId = getStudentIdByName(studentName);
             if (studentId == null) {
                 System.out.println("Student not found for name: " + studentName);
@@ -228,13 +227,14 @@ public class Controller {
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("StudentPopUpPage.fxml"));
-            GridPane layout = loader.load();
+            VBox root = loader.load();  // VBox olarak yükle
 
             StudentPopUpController controller = loader.getController();
             controller.setStudentDetails(studentId);
 
             Stage stage = new Stage();
-            stage.setScene(new Scene(layout));
+            Scene scene = new Scene(root);  // VBox'ı Scene'e ekle
+            stage.setScene(scene);
             stage.setTitle("Student Details");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
@@ -293,14 +293,15 @@ public class Controller {
     private void openClassroomDetailsWindow(String classroomId) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ClassroomPopUpPage.fxml"));
-            GridPane layout = loader.load();
+            VBox root = loader.load();
 
             ClassroomPopUpController controller = loader.getController();
             controller.initialize(classroomId);
 
             Stage stage = new Stage();
-            stage.setScene(new Scene(layout));
-            stage.setTitle("Classroom Details");
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Classroom Schedule");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (Exception e) {
