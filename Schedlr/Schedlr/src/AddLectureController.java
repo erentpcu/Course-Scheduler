@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -25,14 +26,22 @@ public class AddLectureController {
     private void handleAddButtonAction() {
         try {
             // Gather input data
-            String name = lectureNameField.getText();
-            String id = lectureIdField.getText();
+            String name = capitalizeInitials(lectureNameField.getText().trim());
+            String id = lectureIdField.getText().trim();
             String[] timeSlotParts = timeSlotField.getText().split(","); // Format: "Monday,09:00,11:00"
-            TimeSlot timeSlot = new TimeSlot(timeSlotParts[0], timeSlotParts[1], timeSlotParts[2]);
+
+            if (timeSlotParts.length != 3) {
+                throw new IllegalArgumentException("Time slot must be in the format: 'Day,StartTime,EndTime'");
+            }
+
+            String day = timeSlotParts[0].trim();
+            String startTime = timeSlotParts[1].trim();
+            String endTime = timeSlotParts[2].trim();
+            TimeSlot timeSlot = new TimeSlot(day, startTime, endTime);
             int capacity = 30; // Example capacity
 
             // Save the new lecture to the database
-            saveLectureToDatabase(id, name, timeSlot, capacity);
+            saveLectureToDatabase(id, name, timeSlot);
 
             // Optionally, add the new lecture to the in-memory list if needed
             if (lectureList != null) {
@@ -47,7 +56,7 @@ public class AddLectureController {
         }
     }
 
-    private void saveLectureToDatabase(String id, String name, TimeSlot timeSlot, int capacity) {
+    private void saveLectureToDatabase(String id, String name, TimeSlot timeSlot) {
         String insertLectureSql = """
             INSERT INTO lectures (id, name, classroom_id, time_slot_id)
             VALUES (?, ?, NULL, ?)
@@ -68,7 +77,7 @@ public class AddLectureController {
 
             // Get the generated time slot ID
             int timeSlotId;
-            try (var rs = timeSlotStmt.getGeneratedKeys()) {
+            try (ResultSet rs = timeSlotStmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     timeSlotId = rs.getInt(1);
                 } else {
@@ -88,6 +97,25 @@ public class AddLectureController {
         } catch (SQLException e) {
             System.out.println("Error saving lecture to database: " + e.getMessage());
         }
+    }
+
+    /**
+     * Capitalizes the initials of each word in the given string.
+     *
+     * @param input The input string.
+     * @return The string with capitalized initials.
+     */
+    private String capitalizeInitials(String input) {
+        String[] words = input.split(" ");
+        StringBuilder capitalized = new StringBuilder();
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                capitalized.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
+        return capitalized.toString().trim();
     }
 
     @FXML

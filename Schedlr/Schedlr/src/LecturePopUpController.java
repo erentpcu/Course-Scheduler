@@ -18,16 +18,21 @@ public class LecturePopUpController {
      * @param lectureId The ID of the lecture.
      */
     public void initialize(String lectureId) {
+        System.out.println("Received lectureId: " + lectureId); // Debug log
         // Fetch lecture name and students dynamically
         String lectureName = fetchLectureNameFromDatabase(lectureId);
+        if (lectureName != null) {
+            lectureNameLabel.setText("Lecture: " + lectureName);
+        }
+        else{
+            lectureNameLabel.setText("Student not found");
+        }
         List<String> registeredStudents = fetchStudentsForLectureFromDatabase(lectureId);
-
-        // Set lecture name in the pop-up
-        lectureNameLabel.setText("Lecture: " + lectureName);
 
         // Populate the ListView with registered students
         studentsListView.getItems().addAll(registeredStudents);
     }
+
 
     /**
      * Fetch the lecture name from the database.
@@ -44,6 +49,8 @@ public class LecturePopUpController {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString("name");
+                } else {
+                    System.out.println("Lecture not found for ID: " + lectureId); // Debug log
                 }
             }
         } catch (Exception e) {
@@ -51,6 +58,7 @@ public class LecturePopUpController {
         }
         return "Unknown Lecture"; // Default if no lecture is found
     }
+
 
     /**
      * Fetch the list of students registered for the lecture from the database.

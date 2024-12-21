@@ -2,9 +2,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import java.util.Arrays;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.stream.Collectors;
 
 public class AddStudentController {
     @FXML private TextField studentNameField;
@@ -13,15 +15,30 @@ public class AddStudentController {
     @FXML private Button addButton;
     @FXML private Button cancelButton;
 
+    public static String capitalizeName(String name) {
+        if (name == null || name.isEmpty()) {
+            return name;
+        }
+        return Arrays.stream(name.trim().toLowerCase().split("\\s+"))
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .collect(Collectors.joining(" "));
+    }
     @FXML
     private void AddStudentButtonAction() {
         try {
-            String name = studentNameField.getText();
-            String surname = studentSurnameField.getText();
+            String firstName = studentNameField.getText(); // First Name Field
+            String lastName = studentSurnameField.getText(); // Surname Field
+
+            // Capitalize first and last names separately
+            String capitalizedFirstName = capitalizeName(firstName);
+            String capitalizedLastName = capitalizeName(lastName);
+
+            // Combine the names
+            String fullName = capitalizedFirstName + " " + capitalizedLastName;
+
             int id = Integer.parseInt(studentIdField.getText());
 
             // Save the new student to the database
-            String fullName = name + " " + surname;
             saveStudentToDatabase(id, fullName);
 
             // Close the pop-up
@@ -38,7 +55,7 @@ public class AddStudentController {
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
-            pstmt.setString(2, name);
+            pstmt.setString(2, name); // Save the formatted name
             pstmt.executeUpdate();
             System.out.println("Student added to the database: " + name);
         } catch (Exception e) {

@@ -128,13 +128,13 @@ public class Lecture {
 
     public void saveToDatabase() {
         String sql = "INSERT INTO lectures (id, name, time_slot_id) VALUES (?, ?, ?)";
-
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, this.id);
             pstmt.setString(2, this.name);
-            pstmt.setInt(3, this.timeSlot.getId()); // Assuming TimeSlot has getId()
+            pstmt.setInt(3, this.timeSlot.getId()); // Ensure timeSlot is valid
             pstmt.executeUpdate();
+            System.out.println("Lecture saved: " + this.name); // Debug log
         } catch (SQLException e) {
             System.out.println("Error saving lecture to database: " + e.getMessage());
         }

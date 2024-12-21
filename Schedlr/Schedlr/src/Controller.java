@@ -24,9 +24,9 @@ public class Controller {
     @FXML private TextField classroomsSearchBar;
 
 
-
     @FXML
     public void initialize() {
+
         // Initialize the list views
         refreshStudentsListView();
         refreshClassroomsListView();
@@ -43,6 +43,7 @@ public class Controller {
         lecturesListView.setCellFactory(param -> createListCell("Lecture"));
     }
 
+
     // Refresh the students list view by fetching data from the database
     private void refreshStudentsListView() {
         studentsListView.getItems().clear();
@@ -53,10 +54,11 @@ public class Controller {
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                studentsListView.getItems().add(rs.getString("name"));
+                String name = rs.getString("name");
+                studentsListView.getItems().add(name); // Names are already formatted
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("Error refreshing students list: " + e.getMessage());
         }
     }
@@ -96,6 +98,23 @@ public class Controller {
             System.out.println("Error refreshing lectures list: " + e.getMessage());
         }
     }
+
+    private String getStudentIdByName(String studentName) {
+        String sql = "SELECT id FROM students WHERE name = ?";
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, studentName);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("id");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching student ID: " + e.getMessage());
+        }
+        return null; // Return null if student not found
+    }
+
 
     // Search lectures and update the list view
     private void searchLecture(String query) {
@@ -196,8 +215,17 @@ public class Controller {
     }
 
     // Handle opening student details in a pop-up
-    private void openStudentDetailsWindow(String studentId) {
+    private void openStudentDetailsWindow(String studentName) {
         try {
+            System.out.println("Opening details for studentName: " + studentName); // Debugging line
+
+            // Fetch the studentId based on the studentName
+            String studentId = getStudentIdByName(studentName);
+            if (studentId == null) {
+                System.out.println("Student not found for name: " + studentName);
+                return;
+            }
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("StudentPopUpPage.fxml"));
             GridPane layout = loader.load();
 
@@ -214,9 +242,19 @@ public class Controller {
         }
     }
 
+
+
     // Handle opening lecture details in a pop-up
-    private void openLectureDetailsWindow(String lectureId) {
+    private void openLectureDetailsWindow(String lectureName) {
         try {
+            // Fetch the lecture ID based on the lecture name
+            String lectureId = fetchLectureIdByName(lectureName);
+
+            if (lectureId == null) {
+                System.out.println("Lecture not found for name: " + lectureName);
+                return;
+            }
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("LecturePopUpPage.fxml"));
             GridPane layout = loader.load();
 
@@ -232,6 +270,26 @@ public class Controller {
             e.printStackTrace();
         }
     }
+
+    // Helper method to fetch the lecture ID by name
+    private String fetchLectureIdByName(String lectureName) {
+        String sql = "SELECT id FROM lectures WHERE name = ?";
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, lectureName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("id");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching lecture ID: " + e.getMessage());
+        }
+        return null;
+    }
+
+
 
     // Handle opening classroom details in a pop-up
     private void openClassroomDetailsWindow(String classroomId) {

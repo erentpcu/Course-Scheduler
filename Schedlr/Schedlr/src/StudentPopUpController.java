@@ -18,14 +18,16 @@ public class StudentPopUpController {
      * @param studentId The ID of the student.
      */
     public void setStudentDetails(String studentId) {
+        System.out.println("Received studentId: " + studentId); // Debug
         String studentName = fetchStudentNameFromDatabase(studentId);
         if (studentName != null) {
-            studentNameLabel.setText(studentName + " in ders programı");
+            studentNameLabel.setText(studentName + "'s Weekly Schedule");
             populateStudentSchedule(studentId);
         } else {
             studentNameLabel.setText("Student not found");
         }
     }
+
 
     /**
      * Fetch the student's name from the database using the student ID.
@@ -39,6 +41,7 @@ public class StudentPopUpController {
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, studentId);
+            System.out.println("Executing query: " + pstmt.toString()); // Debug
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString("name");
@@ -48,8 +51,9 @@ public class StudentPopUpController {
             System.out.println("Error fetching student name: " + e.getMessage());
         }
 
-        return null; // Return null if student not found or error occurred
+        return null;
     }
+
 
     /**
      * Populates the student's schedule into the GridPane.
