@@ -67,14 +67,16 @@ public class Controller {
     // Refresh the classrooms list view by fetching data from the database
     private void refreshClassroomsListView() {
         classroomsListView.getItems().clear();
-        String sql = "SELECT id FROM classrooms";
+        String sql = "SELECT id, capacity FROM classrooms ORDER BY id";
 
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
-                classroomsListView.getItems().add(rs.getString("id"));
+                String id = rs.getString("id");
+                int capacity = rs.getInt("capacity");
+                classroomsListView.getItems().add(String.format("%s (Capacity: %d)", id, capacity));
             }
 
         } catch (SQLException e) {
@@ -160,7 +162,7 @@ public class Controller {
     // Search classrooms and update the list view
     private void searchClassroom(String query) {
         classroomsListView.getItems().clear();
-        String sql = "SELECT id FROM classrooms WHERE id LIKE ?";
+        String sql = "SELECT id, capacity FROM classrooms WHERE id LIKE ? ORDER BY id";
 
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -168,7 +170,9 @@ public class Controller {
             pstmt.setString(1, "%" + query + "%");
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
-                    classroomsListView.getItems().add(rs.getString("id"));
+                    String id = rs.getString("id");
+                    int capacity = rs.getInt("capacity");
+                    classroomsListView.getItems().add(String.format("%s (Capacity: %d)", id, capacity));
                 }
             }
 
