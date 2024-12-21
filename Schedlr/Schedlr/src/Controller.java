@@ -407,4 +407,23 @@ public class Controller {
         }
     }
 
+    public static boolean assignClassroomToLecture(Lecture lecture, List<Classroom> classrooms) {
+        for (Classroom classroom : classrooms) {
+            String day = lecture.getTimeSlot().getDay();
+            String startTime = lecture.getTimeSlot().getStartTime();
+            String endTime = lecture.getTimeSlot().getEndTime();
+
+            // Try to reserve the classroom
+            if (classroom.reserve(day, startTime, endTime, lecture)) {
+                System.out.println("Lecture " + lecture.getName() + " assigned to classroom " + classroom.getId());
+                return true;
+            }
+        }
+
+        // No suitable classroom found
+        System.out.println("No available classroom for lecture " + lecture.getName() + ".");
+        return false;
+    }
+
+
 }

@@ -131,30 +131,35 @@ public class Classroom {
         return false;
     }
 
-    public boolean release(String day, String startTime, String endTime) {
-        // Release the specified day and time slot
-        Map<String, Boolean> daySchedule = schedule.get(day.toUpperCase());
+    public boolean reserve(String day, String startTime, String endTime, Lecture lecture) {
         String time = startTime + " - " + endTime;
 
+        // Check if classroom capacity is sufficient
+        if (lecture.getStudentCount() > this.capacity) {
+            System.out.println("Cannot reserve classroom " + id + ": Capacity exceeded.");
+            return false;
+        }
+
+        // Check if the specified time slot is available
+        Map<String, Boolean> daySchedule = schedule.get(day.toUpperCase());
         if (daySchedule != null && daySchedule.containsKey(time)) {
-            if (!daySchedule.get(time)) {
-                daySchedule.put(time, true); // Mark as available
-
-                // Remove the associated lecture
-                lectures.removeIf(lecture -> lecture.getTimeSlot().getDay().equalsIgnoreCase(day)
-                        && lecture.getTimeSlot().getStartTime().equals(startTime)
-                        && lecture.getTimeSlot().getEndTime().equals(endTime));
-
-                System.out.println("Classroom " + id + " is now available for " + day + " from " + startTime + " to " + endTime);
+            if (daySchedule.get(time)) {
+                // Reserve the time slot
+                daySchedule.put(time, false);
+                addLecture(lecture);
+                lecture.assignClassroom(this);
+                System.out.println("Classroom " + id + " reserved for " + lecture.getName() +
+                        " on " + day + " from " + startTime + " to " + endTime);
                 return true;
             } else {
-                System.out.println("Classroom " + id + " is already available for " + day + " from " + startTime + " to " + endTime);
-                return false;
+                System.out.println("Classroom " + id + " is already reserved for " + day + " from " + time);
             }
+        } else {
+            System.out.println("Invalid day or time slot.");
         }
-        System.out.println("Invalid day or time slot.");
         return false;
     }
+
 
     public void saveToDatabase() {
         String sql = "INSERT INTO classrooms (id, capacity) VALUES (?, ?)";
@@ -167,6 +172,8 @@ public class Classroom {
         } catch (SQLException e) {
             System.out.println("Error saving classroom to database: " + e.getMessage());
         }
+
+
 
 
 

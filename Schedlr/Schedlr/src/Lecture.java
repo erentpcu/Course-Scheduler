@@ -99,8 +99,11 @@ public class Lecture {
     }
 
     public void assignClassroom(Classroom classroom) {
-        this.assignedClassroom = classroom;
+        if (classroom != null) {
+            this.assignedClassroom = classroom;
+        }
     }
+
 
     // Method to remove a lecture from a list of lectures
     public void removeLecture(List<Lecture> lectures) {
