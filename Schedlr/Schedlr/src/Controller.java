@@ -200,7 +200,7 @@ public class Controller {
     private void handleAddLectureButtonAction() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("addLecturePopUpPage.fxml"));
-            AnchorPane layout = loader.load();
+            VBox layout = loader.load(); // AnchorPane yerine VBox kullan
 
             Stage stage = new Stage();
             stage.setScene(new Scene(layout));
