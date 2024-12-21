@@ -84,4 +84,29 @@ public class TimeSlot {
                 System.out.println("Error saving time slot to database: " + e.getMessage());
             }
         }
+
+    public static TimeSlot fetchTimeSlotById(int id) {
+        String sql = "SELECT id, day, start_time, end_time FROM time_slots WHERE id = ?";
+        TimeSlot timeSlot = null;
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                String day = rs.getString("day");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
+
+                timeSlot = new TimeSlot(id, day, startTime, endTime);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return timeSlot;
     }
+
+}

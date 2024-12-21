@@ -2,35 +2,91 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="StudentPopUpController" hgap="10" vgap="10">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="StudentPopUpController"
+      style="-fx-background-color: white; -fx-padding: 20;">
+
     <!-- Header -->
-    <HBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="8" alignment="CENTER">
-        <Label fx:id="studentNameLabel" text="Öğrencinin Ders Programı" style="-fx-font-size: 16; -fx-font-weight: bold;" />
-    </HBox>
+    <Label fx:id="studentNameLabel"
+           style="-fx-font-size: 18; -fx-font-weight: bold; -fx-padding: 0 0 10 0;"
+           alignment="CENTER"
+           maxWidth="Infinity"/>
 
-    <!-- Days of the Week -->
-    <Label text="HOURS" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-    <Label text="MONDAY" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    <Label text="TUESDAY" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-    <Label text="WEDNESDAY" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-    <Label text="THURSDAY" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-    <Label text="FRIDAY" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-    <Label text="SATURDAY" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-    <Label text="SUNDAY" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+    <!-- Schedule Grid -->
+    <GridPane fx:id="gridPane"
+              gridLinesVisible="true"
+              style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 1;">
 
-    <!-- Time Slots -->
-    <Label text="08:30 - 09:25" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-    <Label text="09:25 - 10:20" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-    <Label text="10:20 - 11:15" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-    <Label text="11:15 - 12:10" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-    <Label text="12:10 - 13:05" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-    <Label text="13:05 - 14:00" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-    <Label text="14:00 - 14:55" GridPane.columnIndex="0" GridPane.rowIndex="8" />
-    <Label text="14:55 - 15:50" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+        <!-- Column Headers -->
+        <columnConstraints>
+            <ColumnConstraints minWidth="80" prefWidth="80"/>
+            <ColumnConstraints minWidth="120" prefWidth="120"/>
+            <ColumnConstraints minWidth="120" prefWidth="120"/>
+            <ColumnConstraints minWidth="120" prefWidth="120"/>
+            <ColumnConstraints minWidth="120" prefWidth="120"/>
+            <ColumnConstraints minWidth="120" prefWidth="120"/>
+        </columnConstraints>
 
-    <!-- Sample Lecture Entries -->
-    <Label text="Math 101" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-    <Label text="Physics 102" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-    <Label text="Chemistry 103" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-</GridPane>
+        <!-- Headers -->
+        <Label text="HOURS"
+               GridPane.columnIndex="0" GridPane.rowIndex="0"
+               style="-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-font-weight: bold; -fx-alignment: center;"
+               maxWidth="Infinity" maxHeight="Infinity"/>
+        <Label text="MONDAY"
+               GridPane.columnIndex="1" GridPane.rowIndex="0"
+               style="-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-font-weight: bold; -fx-alignment: center;"
+               maxWidth="Infinity" maxHeight="Infinity"/>
+        <Label text="TUESDAY"
+               GridPane.columnIndex="2" GridPane.rowIndex="0"
+               style="-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-font-weight: bold; -fx-alignment: center;"
+               maxWidth="Infinity" maxHeight="Infinity"/>
+        <Label text="WEDNESDAY"
+               GridPane.columnIndex="3" GridPane.rowIndex="0"
+               style="-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-font-weight: bold; -fx-alignment: center;"
+               maxWidth="Infinity" maxHeight="Infinity"/>
+        <Label text="THURSDAY"
+               GridPane.columnIndex="4" GridPane.rowIndex="0"
+               style="-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-font-weight: bold; -fx-alignment: center;"
+               maxWidth="Infinity" maxHeight="Infinity"/>
+        <Label text="FRIDAY"
+               GridPane.columnIndex="5" GridPane.rowIndex="0"
+               style="-fx-background-color: #f0f0f0; -fx-padding: 10; -fx-font-weight: bold; -fx-alignment: center;"
+               maxWidth="Infinity" maxHeight="Infinity"/>
+
+        <!-- Time Slots -->
+        <Label text="08:30" GridPane.columnIndex="0" GridPane.rowIndex="1"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="09:25" GridPane.columnIndex="0" GridPane.rowIndex="2"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="10:20" GridPane.columnIndex="0" GridPane.rowIndex="3"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="11:15" GridPane.columnIndex="0" GridPane.rowIndex="4"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="12:10" GridPane.columnIndex="0" GridPane.rowIndex="5"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="13:05" GridPane.columnIndex="0" GridPane.rowIndex="6"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="14:00" GridPane.columnIndex="0" GridPane.rowIndex="7"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="14:55" GridPane.columnIndex="0" GridPane.rowIndex="8"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="15:50" GridPane.columnIndex="0" GridPane.rowIndex="9"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="16:45" GridPane.columnIndex="0" GridPane.rowIndex="10"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="17:40" GridPane.columnIndex="0" GridPane.rowIndex="11"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="18:35" GridPane.columnIndex="0" GridPane.rowIndex="12"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="19:30" GridPane.columnIndex="0" GridPane.rowIndex="13"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="20:25" GridPane.columnIndex="0" GridPane.rowIndex="14"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="21:20" GridPane.columnIndex="0" GridPane.rowIndex="15"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+        <Label text="22:15" GridPane.columnIndex="0" GridPane.rowIndex="16"
+               style="-fx-padding: 10; -fx-alignment: center;" maxWidth="Infinity"/>
+    </GridPane>
+</VBox>

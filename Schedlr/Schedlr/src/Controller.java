@@ -406,4 +406,57 @@ public class Controller {
             System.out.println("Deletion canceled by user.");
         }
     }
+
+    public static void allocateClassroomsForExistingLectures() {
+        List<Classroom> classrooms = Classroom.fetchAllClassrooms();
+        String sql = """
+            SELECT l.id, l.name, t.day, t.start_time, t.end_time, COUNT(ss.student_id) AS student_count
+            FROM lectures l
+            LEFT JOIN time_slots t ON l.time_slot_id = t.id
+            LEFT JOIN student_schedule ss ON l.id = ss.lecture_id
+            WHERE l.classroom_id IS NULL
+            GROUP BY l.id, l.name, t.day, t.start_time, t.end_time
+        """;
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String lectureId = rs.getString("id");
+                String lectureName = rs.getString("name");
+                String day = rs.getString("day");
+                String startTime = rs.getString("start_time");
+                String endTime = rs.getString("end_time");
+                int studentCount = rs.getInt("student_count");
+
+                for (Classroom classroom : classrooms) {
+                    if (classroom.getCapacity() >= studentCount &&
+                            classroom.isAvailable(day, startTime + " - " + endTime)) {
+                        boolean reserved = classroom.reserve(day, startTime, endTime, lectureName, lectureId, studentCount);
+                        if (reserved) {
+                            updateLectureWithClassroom(lectureId, classroom.getId());
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error allocating classrooms: " + e.getMessage());
+        }
+    }
+
+    private static void updateLectureWithClassroom(String lectureId, String classroomId) {
+        String sql = "UPDATE lectures SET classroom_id = ? WHERE id = ?";
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, classroomId);
+            pstmt.setString(2, lectureId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error updating lecture with classroom: " + e.getMessage());
+        }
+    }
+
 }

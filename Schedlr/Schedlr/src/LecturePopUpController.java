@@ -52,7 +52,7 @@ public class LecturePopUpController {
                 // lecturer sütunu olmadığı için kaldırıldı
                 String day = rs.getString("day");
                 String startTime = rs.getString("start_time");
-                timeLabel.setText("Time: " + day + " " + startTime);
+                timeLabel.setText("Date: " + day + " " + startTime);
 
                 // Duration bilgisi veritabanında yok, bu yüzden end_time kullanılabilir
                 String endTime = rs.getString("end_time");
