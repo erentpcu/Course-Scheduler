@@ -16,7 +16,8 @@
     <top>
         <MenuBar>
             <Menu text="Help">
-                <MenuItem text="About" />
+                <MenuItem text="Help" onAction="#handleHelpButtonAction" />
+                <MenuItem text="Contributors" onAction="#handleContributorsButtonAction" />
             </Menu>
         </MenuBar>
     </top>

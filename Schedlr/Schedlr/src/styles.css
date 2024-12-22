@@ -1,0 +1,10 @@
+.tab-pane .tab {
+    -fx-text-fill: #2a5298; /* Blue color */
+    -fx-font-weight: bold;  /* Makes the text bold */
+    -fx-font-size: 10px;    /* Adjust font size if needed */
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #e0f7fa; /* Light blue background for the selected tab */
+    -fx-text-fill: #1a73e8;        /* Slightly darker blue for the selected tab */
+}
