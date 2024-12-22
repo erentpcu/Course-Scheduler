@@ -1,6 +1,6 @@
 # Course Scheduler
 
-Welcome to the Course Scheduler wiki! If you don't know how to use the app ,you can just check the help button above.
+Welcome to the Course Scheduler! If you don't know how to use the app ,you can just check the help button above.
 
 ![{F76B48C9-C1ED-47CC-9B72-CF5FF77D70D4}](https://github.com/user-attachments/assets/790e82cc-cf52-47da-bea3-d618b868120c)
 
