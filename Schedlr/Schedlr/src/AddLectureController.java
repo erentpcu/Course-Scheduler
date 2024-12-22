@@ -110,16 +110,19 @@ public class AddLectureController {
         String lecturer = lecturerField.getText();
         String classroom = classroomComboBox.getValue();
         int duration = durationSpinner.getValue();
+
         // Validation checks
-        if (name.isEmpty() || day == null || time == null || lecturer.isEmpty() || classroom == null) {
+        if (name.isEmpty() || day == null || time == null || lecturer.isEmpty()) {
             showAlert("Hata", "Lütfen tüm alanları doldurun!");
             return;
         }
-        // Check for conflicts
-        if (checkConflicts(classroom, day, time, duration)) {
+
+        // Check for conflicts only if a classroom is selected
+        if (classroom != null && checkConflicts(classroom, day, time, duration)) {
             showAlert("Hata", "Bu sınıf ve zaman diliminde çakışma var!");
             return;
         }
+
         // Get selected students
         List<String> selectedStudents = studentsListView.getItems().stream()
                 .filter(CheckBox::isSelected)
@@ -127,15 +130,14 @@ public class AddLectureController {
                 .collect(Collectors.toList());
         if (selectedStudents.isEmpty()) {
             showAlert("Uyarı", "Hiç öğrenci seçilmedi. Devam etmek istiyor musunuz?");
-            // İsterseniz burada return ekleyerek öğrenci seçilmeden ders eklenmesini engelleyebilirsiniz
         }
+
         // Save to database
         saveLectureToDatabase(name, day, time, lecturer, classroom, duration, selectedStudents);
+
         // Close the window
         ((Stage) addButton.getScene().getWindow()).close();
-
     }
-
     private void saveLectureToDatabase(String name, String day, String time,
                                        String lecturer, String classroom,
                                        int duration, List<String> students) {

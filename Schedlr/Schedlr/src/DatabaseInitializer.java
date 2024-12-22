@@ -5,6 +5,9 @@ public class DatabaseInitializer {
 
     public static void initializeDatabase() {
         // Önce bağımlılığı olmayan tabloları oluştur
+        String dropStudentsTable = "DROP TABLE IF EXISTS students;";
+        String dropLecturesTable = "DROP TABLE IF EXISTS lectures;";
+
         String createStudentsTable = """
        CREATE TABLE IF NOT EXISTS students (
            id INTEGER PRIMARY KEY,
@@ -121,6 +124,7 @@ public class DatabaseInitializer {
 
         try (Connection conn = Database.connect();
              Statement stmt = conn.createStatement()) {
+
 
             // Tabloları doğru sırayla oluştur (sadece yoksa)
             stmt.execute(createStudentsTable);
