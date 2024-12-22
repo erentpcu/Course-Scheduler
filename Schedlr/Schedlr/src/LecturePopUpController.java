@@ -36,23 +36,22 @@ public class LecturePopUpController {
     }
     private void loadLectureDetails() {
         String sql = """
-       SELECT l.name, l.id, t.day, t.start_time, t.end_time, c.id as classroom_id
-       FROM lectures l
-       LEFT JOIN time_slots t ON l.time_slot_id = t.id
-       LEFT JOIN classrooms c ON l.classroom_id = c.id
-       WHERE l.id = ?
-       """;
+   SELECT l.name, l.id, t.day, t.start_time, t.end_time, c.id as classroom_id, l.lecturer
+   FROM lectures l
+   LEFT JOIN time_slots t ON l.time_slot_id = t.id
+   LEFT JOIN classrooms c ON l.classroom_id = c.id
+   WHERE l.id = ?
+   """;
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, lectureId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 courseCodeLabel.setText(rs.getString("name"));
-                String day = rs.getString("day");
                 String startTime = rs.getString("start_time");
-                String endTime = rs.getString("end_time");
-                timeLabel.setText("Time: " + day + " " + startTime);
-                durationLabel.setText("Time: " + startTime + " - " + endTime);
+                timeLabel.setText("Starting time: " + startTime);
+                String lecturer = rs.getString("lecturer");
+                durationLabel.setText("Lecturer: " + (lecturer != null ? lecturer : "Not assigned"));
                 String classroom = rs.getString("classroom_id");
                 classroomLabel.setText("Classroom: " + (classroom != null ? classroom : "Not allocated"));
             }
@@ -60,6 +59,7 @@ public class LecturePopUpController {
             e.printStackTrace();
             showAlert("Error", "Failed to load lecture details.");
         }
+
     }
     private void loadEnrolledStudents() {
         studentsListView.getItems().clear();
