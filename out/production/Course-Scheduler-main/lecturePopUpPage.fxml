@@ -28,7 +28,7 @@
 
     <!-- Students List -->
     <VBox VBox.vgrow="ALWAYS">
-        <Label text="Enrolled Students:" style="-fx-font-size: 14;"/>
+        <Label fx:id="enrolledStudentsLabel" text="Enrolled Students: 0" style="-fx-font-size: 14;"/>
         <ListView fx:id="studentsListView" VBox.vgrow="ALWAYS"/>
     </VBox>
 
