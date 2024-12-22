@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+    <Label text="Contributors" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: navy;" />
+    <VBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10;">
+        <Label text="Hilal Sinem Sayar" style="-fx-font-size: 14px;" />
+        <Label text="Muzaffer Koray Cengiz" style="-fx-font-size: 14px;" />
+        <Label text="Eren Topçu" style="-fx-font-size: 14px;" />
+        <Label text="Berke Işık" style="-fx-font-size: 14px;" />
+        <Label text="Tarık Dinçel" style="-fx-font-size: 14px;" />
+    </VBox>
+</VBox>

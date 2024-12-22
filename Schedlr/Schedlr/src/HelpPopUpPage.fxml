@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<VBox xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="CENTER" style="-fx-padding: 20;" stylesheets="@styles.css">
+    <Label text="Help and Documentation" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+    <Separator />
+    <TabPane prefWidth="650" prefHeight="450">
+        <tabs>
+            <!-- Main Features Tab -->
+            <Tab text="Main Features">
+                <ScrollPane fitToWidth="true" fitToHeight="true">
+                    <content>
+                        <VBox spacing="10" style="-fx-padding: 10;">
+                            <!-- Explanation -->
+                            <Text text="★ Manage Lectures:" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Text text=" • Add new lectures using the '+' button in the 'Lectures' section."/>
+                            <Text text=" • View or delete lectures by clicking on the 'X' button in the lecture list." />
+
+                            <Text text="★ Manage Students:" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Text text=" • Add new students using the '+' button in the 'Students' section."/>
+                            <Text text=" • Assign students to lectures in the 'Add Lecture' window."/>
+
+                            <Text text="★ Manage Classrooms:" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Text text=" • View available classrooms and their capacities in the 'Classrooms' section."/>
+                            <Text text=" • Assign classrooms to lectures in the 'Add Lecture' window." />
+
+                            <Text text="★ Search Functionality:" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Text text=" • Use the search bars to quickly find students, classrooms, or lectures." />
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </Tab>
+
+
+            <!-- Students Tab -->
+            <Tab text="Students">
+                <ScrollPane fitToWidth="true" fitToHeight="true">
+                    <content>
+                        <VBox spacing="15" style="-fx-padding: 15;">
+                            <Label text="★ Students Section" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Label text="• Add a student by clicking the '+' button and filling out the 'Add New Student' form." />
+                            <Label text="• Use the search bar to find specific students." />
+                            <Label text="• View weekly schedule of a student from the list by double-clicking on the name." />
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Classrooms Tab -->
+            <Tab text="Classrooms">
+                <ScrollPane fitToWidth="true" fitToHeight="true">
+                    <content>
+                        <VBox spacing="15" style="-fx-padding: 15;">
+                            <Label text="★ Classrooms Section" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Label text="• View available classrooms along with their capacities." />
+                            <Label text="• Use the search bar to find specific classrooms." />
+                            <Label text="• View weekly schedule of the classroom from the list by double-clicking on the name." />
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Lectures Tab -->
+            <Tab text="Lectures">
+                <ScrollPane fitToWidth="true" fitToHeight="true">
+                    <content>
+                        <VBox spacing="15" style="-fx-padding: 15;">
+                            <Label text="★ Lectures Section" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Label text="• Add a lecture using the '+' button in the 'Lectures' section." />
+                            <Label text="• Assign students and classrooms to the lecture in the 'Add Lecture' window." />
+                            <Label text="• Use the search bar to find specific lectures from the list." />
+                            <Label text="• View enrolled students and detailed information of the lectures from the main list by double-clicking on the name." />
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Create Meeting Tab -->
+            <Tab text="Create a Meeting">
+                <ScrollPane fitToWidth="true" fitToHeight="true">
+                    <content>
+                        <VBox spacing="15" style="-fx-padding: 15;">
+                            <Label text="★ Create a Meeting" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Label text="• Select a day and time for the meeting." />
+                            <Label text="• Choose available classrooms and students for the meeting." />
+                            <Label text="• Add details about the meeting in the provided text area." />
+                            <Label text="• Click 'Create Meeting' to finalize." />
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Common Issues Tab -->
+            <Tab text="Common Issues">
+                <ScrollPane fitToWidth="true" fitToHeight="true">
+                    <content>
+                        <VBox spacing="15" style="-fx-padding: 15;">
+                            <Label text="★ Common Issues" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Label text="⚠ Check your database connection if errors occur." />
+                            <Label text="⚠ Ensure all required fields are filled when adding new entries." />
+                            <Label text="⚠ Avoid duplicate entries for students or lectures." />
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </Tab>
+
+            <!-- Tips Tab -->
+            <Tab text="Tips">
+                <ScrollPane fitToWidth="true" fitToHeight="true">
+                    <content>
+                        <VBox spacing="15" style="-fx-padding: 15;">
+                            <Label text="★ Tips" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Label text="💡 Always save changes after modifications." />
+                            <Label text="💡 Confirm deletions carefully as they cannot be undone." />
+                            <Label text="💡 Use search functionality to quickly navigate large datasets." />
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </Tab>
+        </tabs>
+    </TabPane>
+</VBox>

@@ -6,6 +6,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,6 +25,14 @@ public class Controller {
     @FXML private TextField studentsSearchBar;
     @FXML private TextField classroomsSearchBar;
 
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
     @FXML
     public void initialize() {
@@ -331,6 +340,41 @@ public class Controller {
             System.out.println("Error loading Create Meeting pop-up: " + e.getMessage());
         }
     }
+
+    @FXML
+    private void handleHelpButtonAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("HelpPopupPage.fxml")); // Path to HelpPopup.fxml
+            Stage helpStage = new Stage();
+            helpStage.setScene(new Scene(loader.load()));
+            helpStage.setTitle("Help");
+            helpStage.initModality(Modality.APPLICATION_MODAL);
+            helpStage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load the Help window.");
+        }
+    }
+
+    @FXML
+    private void handleContributorsButtonAction() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ContributorsPage.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            Stage stage = new Stage();
+            stage.setTitle("Contributors");
+            stage.setScene(scene);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load Contributors page.");
+        }
+    }
+
+
+
 
     private ListCell<String> createListCell(String type) {
         return new ListCell<>() {
