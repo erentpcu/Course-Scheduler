@@ -21,14 +21,18 @@ public class LecturePopUpController {
     @FXML private Label timeLabel;
     @FXML private Label durationLabel;
     @FXML private Label classroomLabel;
+    @FXML private Label enrolledStudentsLabel;
     @FXML private ListView<String> studentsListView;
     @FXML private Button saveButton;
     @FXML private Button addButton;
     @FXML private Button deleteButton;
+
+    private int enrolledStudentsCount = 0;
     private String lectureId;
     private boolean isDeleteMode = false;
     private List<String> originalStudents = new ArrayList<>();
     private List<String> removedStudents = new ArrayList<>();
+
     public void initialize(String lectureId) {
         this.lectureId = lectureId;
         loadLectureDetails();
@@ -77,11 +81,18 @@ public class LecturePopUpController {
             while (rs.next()) {
                 studentsListView.getItems().add(rs.getString("name"));
             }
+            updateEnrolledStudentsLabel();
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to load enrolled students.");
         }
     }
+
+    private void updateEnrolledStudentsLabel() {
+        enrolledStudentsCount = studentsListView.getItems().size();
+        enrolledStudentsLabel.setText("Enrolled Students: " + enrolledStudentsCount);
+    }
+
     @FXML
     private void handleAddStudents() {
         try {

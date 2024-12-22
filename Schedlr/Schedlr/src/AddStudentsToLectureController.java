@@ -99,8 +99,67 @@ public class AddStudentsToLectureController {
             return;
         }
 
+        // Fetch classroom capacity and enrolled student count
+        int classroomCapacity = getClassroomCapacity();
+        int enrolledStudentCount = getEnrolledStudentCount();
+
+        int remainingSeats = classroomCapacity - enrolledStudentCount;
+
+        if (selectedStudentIds.size() > remainingSeats) {
+            showAlert("Classroom Full",
+                    "Cannot add students. Remaining capacity: " + remainingSeats);
+            return;
+        }
+
         addStudentsToLecture(selectedStudentIds);
         stage.close();
+    }
+
+    private int getClassroomCapacity() {
+        String sql = """
+        SELECT c.capacity
+        FROM classrooms c
+        INNER JOIN lectures l ON c.id = l.classroom_id
+        WHERE l.id = ?
+    """;
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, lectureId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("capacity");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to fetch classroom capacity.");
+        }
+        return 0; // Default capacity
+    }
+
+    private int getEnrolledStudentCount() {
+        String sql = """
+        SELECT COUNT(*) AS enrolled_count
+        FROM student_schedule
+        WHERE lecture_id = ?
+    """;
+
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, lectureId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("enrolled_count");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to fetch enrolled student count.");
+        }
+        return 0; // Default count
     }
 
     private void addStudentsToLecture(List<String> studentIds) {
